@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text} from 'react-native';
-import Navigation from '@/components/Navigation';
+import Navigation from 'src/components/Navigation';
 function Index({navigation}) {
   return (
     <Navigation navigation={navigation}>

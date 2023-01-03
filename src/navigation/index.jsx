@@ -12,19 +12,19 @@ const Contacts = lazy(() => import('../pages/Contacts'));
 const navigatorList = [
   {
     name: SITE_MAP.LOGIN,
-    component: <Login />,
+    Component: <Login />,
   },
   {
     path: SITE_MAP.REGISTER,
-    component: <Register />,
+    Component: <Register />,
   },
   {
     path: SITE_MAP.INDEX.path,
-    component: <Home />,
+    Component: <Home />,
   },
   {
     path: SITE_MAP.CONTACT.path,
-    component: <Contacts />,
+    Component: <Contacts />,
   },
 ];
 const Stack = createNativeStackNavigator();
@@ -32,11 +32,15 @@ const Index = () => {
   return (
     <Suspense fallback={<Text>Loading...</Text>}>
       <NavigationContainer>
-        {navigatorList.map(({name, component}, index) => (
+        {/* {navigatorList.map(({name, Component}, index) => (
           <Stack.Navigator key={index}>
-            <Stack.Screen name={name} component={component} />
+            <Stack.Screen name={name} component={Component} />
           </Stack.Navigator>
-        ))}
+        ))} */}
+        <Stack.Navigator key={1}>
+          <Stack.Screen name={'login'} component={Login} />
+          <Stack.Screen name={'home'} component={Home} />
+        </Stack.Navigator>
       </NavigationContainer>
     </Suspense>
   );

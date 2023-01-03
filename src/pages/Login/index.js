@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import RadioGroup from '../../components/RadioGroup';
-import {Link} from 'react-router-native';
+// import {Link} from 'react-router-native';
 
 import Logo from '../../assets/Icons/logo.png';
 import AppleIcon from '../../assets/Icons/apple.png';
@@ -44,7 +44,7 @@ function Login() {
   const onSubmit = data => alert(JSON.stringify(data));
   const handleRegister = () => alert('Regiter link');
   const handlePressIconLogin = type => alert(type);
-
+  console.log('login');
   return (
     <View style={{flex: 1}}>
       <View style={{backgroundColor: '#d9463e', flex: 0.5}} />
@@ -89,23 +89,23 @@ function Login() {
           </View>
         </View>
         <View style={{marginTop: 10}}>
-          <Link to="/forgot">
+          {/* <Link to="/forgot">
             <Text style={{color: '#d9463e', fontSize: 15}}>Quên mật khẩu?</Text>
-          </Link>
+          </Link> */}
         </View>
       </View>
       <View style={styles.footer}>
         <Text style={{marginRight: 10, fontSize: 15, color: '#000'}}>
           Bạn chưa có tài khoản?
         </Text>
-        <Link to={SITE_MAP.REGISTER}>
+        {/* <Link to={SITE_MAP.REGISTER}>
           <View style={{width: 100, marginBottom: 10}}>
             <Button
               title="Đăng ký"
               style={{paddingVertical: 8, borderRadius: 5}}
             />
           </View>
-        </Link>
+        </Link> */}
       </View>
     </View>
   );

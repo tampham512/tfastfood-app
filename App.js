@@ -2,8 +2,8 @@ import {StatusBar, StyleSheet, useColorScheme} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import Natigation from '@/Natigation/index';
-
+import Natigation from 'src/navigation';
+import {NativeBaseProvider} from 'native-base';
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -13,11 +13,13 @@ const App = () => {
 
   return (
     <SafeAreaProvider>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={'#d9463e'}
-      />
-      <Natigation />
+      <NativeBaseProvider>
+        <StatusBar
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          backgroundColor={'#d9463e'}
+        />
+        <Natigation />
+      </NativeBaseProvider>
     </SafeAreaProvider>
   );
 };

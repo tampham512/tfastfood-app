@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
 import {SITE_MAP} from '../../utils/constants/Path';
 
-import HomeIcon from '../../../assets/Icons/home.png';
+import HomeIcon from 'src/assets/Icons/home.png';
 import {Box} from 'native-base';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // import * as S from './styled';
