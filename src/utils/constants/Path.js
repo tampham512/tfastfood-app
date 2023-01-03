@@ -4,7 +4,7 @@ export const SITE_MAP = {
     menu: 'home',
   },
   CONTACT: {
-    path: 'contact',
+    name: 'contact',
     menu: 'contact',
   },
   LOGIN: 'login',
