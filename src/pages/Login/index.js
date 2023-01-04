@@ -15,6 +15,8 @@ import FacebookIcon from '../../assets/Icons/facebook.png';
 import GooglePlusIcon from '../../assets/Icons/google-plus.png';
 
 import {SITE_MAP} from '../../utils/constants/Path';
+import {useDispatch, useSelector} from 'react-redux';
+import {login, isLoginIn} from 'src/redux/slices/authSlice';
 
 const options = [
   {value: 0, key: 0, name: 'Cá Nhân', color: 'cyan.100'},
@@ -26,11 +28,15 @@ const listLogin = [
   {type: 'FACEBOOK', key: 'FACEBOOK', icon: FacebookIcon},
 ];
 const schema = yup.object({
-  number_phone: yup.string().required(),
+  username: yup.string().required(),
   password: yup.string().required(),
 });
 
 function Login() {
+  const dispatch = useDispatch();
+  const {isLoading, userInfo, accessToken} = useSelector(state => state.auth);
+  console.log('🚀 ~ file: index.jsx:20 ~ Index ~ userInfo', userInfo);
+  console.log('🚀 ~ file: index.jsx:9 ~ Index ~ isLoading', isLoading);
   const {
     control,
     handleSubmit,
@@ -41,9 +47,17 @@ function Login() {
     reValidateMode: 'onChange',
     defaultValue: {category: 0},
   });
-  const onSubmit = data => alert(JSON.stringify(data));
-  const handleRegister = () => alert('Regiter link');
-  const handlePressIconLogin = type => alert(type);
+  const onSubmit = data => {
+    console.log('🚀 ~ file: index.js:48 ~ onSubmit ~ data', data);
+    try {
+      dispatch(isLoginIn());
+    } catch (error) {
+      console.log(error);
+    }
+    alert(JSON.stringify(data));
+  };
+  // const handleRegister = () => alert('Regiter link');
+  // const handlePressIconLogin = type => alert(type);
   console.log('login');
   return (
     <View style={{flex: 1}}>
@@ -52,19 +66,19 @@ function Login() {
       <View style={[styles.container]}>
         <View style={styles.containerCenter}>
           <Image source={Logo} style={styles.img} resizeMode="contain" />
-          <RadioGroup
+          {/* <RadioGroup
             options={options}
             name="category"
             control={control}
             errors={errors}
             defaultValue={0}
-          />
+          /> */}
           <Input
             control={control}
             errors={errors}
-            name="number_phone"
-            label="Số điện thoại"
-            keyboardType="phone-pad"
+            name="username"
+            label="Username"
+            // keyboardType="phone-pad"
           />
           <Input
             control={control}

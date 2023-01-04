@@ -17,7 +17,7 @@
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/native": "^6.1.1",
     "@react-navigation/native-stack": "^6.9.7",
-    "@reduxjs/toolkit": "^1.9.0",
+    "@reduxjs/toolkit": "^1.6.0",
     "babel-plugin-module-resolver": "^4.1.0",
     "native-base": "^3.4.21",
     "react": "18.1.0",
@@ -29,6 +29,7 @@
     "react-native-screens": "^3.18.2",
     "react-native-svg": "^13.5.0",
     "react-native-vector-icons": "^9.2.0",
+    "react-redux": "^8.0.5",
     "styled-component": "^2.8.0",
     "yup": "^0.32.11"
   },

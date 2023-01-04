@@ -12,25 +12,28 @@ const authSlice = createSlice({
   initialState,
   reducer: {
     login: (state, action) => {
-      const {username, password} = action.payload;
-      LoginAPI.useGetTokenLoginMutation({username, password})
-        .unwrap()
-        .then(data => {
-          state.accessToken = data.token;
-          AsyncStorage.setItem('accessToken', JSON.stringify(data?.token));
-          AuthAPI.useGetUserQuery()
-            .unwrap()
-            .then(dataUser => {
-              state.userInfo = dataUser?.user;
-              AsyncStorage.setItem('userInfo', JSON.stringify(dataUser?.user));
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      // const {username, password} = action.payload;
+      console.log('🚀 ~ file: authSlice.js:16 ~ password', action);
+      // console.log('🚀 ~ file: authSlice.js:16 ~ username', username);
+
+      // LoginAPI.useGetTokenLoginMutation({username, password})
+      //   .unwrap()
+      //   .then(data => {
+      //     state.accessToken = data.token;
+      //     AsyncStorage.setItem('accessToken', JSON.stringify(data?.token));
+      //     AuthAPI.useGetUserQuery()
+      //       .unwrap()
+      //       .then(dataUser => {
+      //         state.userInfo = dataUser?.user;
+      //         AsyncStorage.setItem('userInfo', JSON.stringify(dataUser?.user));
+      //       })
+      //       .catch(err => {
+      //         console.log(err);
+      //       });
+      //   })
+      //   .catch(err => {
+      //     console.log(err);
+      //   });
     },
     logout: (state, action) => {
       AuthAPI.useLogoutMutation()
@@ -85,6 +88,6 @@ const authSlice = createSlice({
     },
   },
 });
-const {actions, reducer, register} = authSlice;
-export const {login, logout} = actions;
+const {actions, reducer} = authSlice;
+export const {login, logout, register} = actions;
 export default reducer;

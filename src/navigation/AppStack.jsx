@@ -1,28 +1,32 @@
-import React, {lazy} from 'react';
-
+import React, {lazy, Suspense} from 'react';
+import {View, Text} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SITE_MAP} from '../utils/constants/Path';
 
 const Login = lazy(() => import('../pages/Login'));
 const Register = lazy(() => import('../pages/Register'));
+const Home = lazy(() => import('../pages/Home'));
+const Contacts = lazy(() => import('../pages/Contacts'));
 
 const navigatorList = [
   {
-    name: SITE_MAP.LOGIN,
-    Component: Login,
+    path: SITE_MAP.INDEX.path,
+    Component: Home,
   },
   {
-    path: SITE_MAP.REGISTER,
-    Component: Register,
+    path: SITE_MAP.CONTACT.path,
+    Component: Contacts,
   },
 ];
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      {navigatorList.map(({name, Component}, index) => (
-        <Stack.Screen name={name} component={Component} key={index} />
-      ))}
+    <Stack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName={SITE_MAP.INDEX.name}>
+      <Stack.Screen name={SITE_MAP.INDEX.name} component={Home} />
+      <Stack.Screen name={SITE_MAP.CONTACT.name} component={Contacts} />
     </Stack.Navigator>
   );
 };

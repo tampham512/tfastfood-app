@@ -1,34 +1,31 @@
-import React, {lazy, Suspense} from 'react';
-import {View, Text} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import React, {lazy} from 'react';
+
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SITE_MAP} from '../utils/constants/Path';
+import {NavigationContainer} from '@react-navigation/native';
 
 const Login = lazy(() => import('../pages/Login'));
 const Register = lazy(() => import('../pages/Register'));
-const Home = lazy(() => import('../pages/Home'));
-const Contacts = lazy(() => import('../pages/Contacts'));
 
 const navigatorList = [
   {
-    path: SITE_MAP.INDEX.path,
-    Component: Home,
+    name: SITE_MAP.LOGIN,
+    Component: Login,
   },
   {
-    path: SITE_MAP.CONTACT.path,
-    Component: Contacts,
+    path: SITE_MAP.REGISTER,
+    Component: Register,
   },
 ];
 const Stack = createNativeStackNavigator();
 const AuthStack = () => {
   return (
-    <Suspense fallback={<Text>Loading...</Text>}>
-      <Stack.Navigator>
-        {navigatorList.map(({name, Component}, index) => (
-          <Stack.Screen name={name} component={Component} />
-        ))}
-      </Stack.Navigator>
-    </Suspense>
+    <Stack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName={SITE_MAP.LOGIN}>
+      <Stack.Screen name={SITE_MAP.LOGIN} component={Login} />
+      <Stack.Screen name={SITE_MAP.REGISTER} component={Register} />
+    </Stack.Navigator>
   );
 };
 export default AuthStack;
