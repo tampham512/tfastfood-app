@@ -4,33 +4,35 @@ import {SITE_MAP} from '../../utils/constants/Path';
 
 import HomeIcon from 'src/assets/Icons/home.png';
 import {Box} from 'native-base';
+import {useNavigation} from '@react-navigation/core';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // import * as S from './styled';
-function Navigation({navigation, children}) {
+function Navigation({children}) {
+  const {navigation} = useNavigation();
   const menuList = [
     {
       title: 'Trang Chủ',
       icon: '',
       menu: SITE_MAP.INDEX.menu,
-      path: SITE_MAP.INDEX.path,
+      path: SITE_MAP.INDEX.name,
     },
     {
       title: 'Contacts',
       icon: '',
-      menu: SITE_MAP.CONTACT.name,
-      path: SITE_MAP.CONTACT.path,
+      menu: SITE_MAP.CONTACT.menu,
+      path: SITE_MAP.CONTACT.name,
     },
     {
       title: 'QR-Code Rửa Xe',
       icon: '',
       menu: SITE_MAP.INDEX.name,
-      name: SITE_MAP.INDEX.path,
+      name: SITE_MAP.INDEX.name,
     },
     {
       title: 'Chat',
       icon: '',
       menu: SITE_MAP.INDEX.name,
-      name: SITE_MAP.INDEX.path,
+      name: SITE_MAP.INDEX.name,
     },
     {
       title: 'Tài Khoản',
