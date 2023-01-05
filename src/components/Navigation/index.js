@@ -8,19 +8,19 @@ import {useNavigation} from '@react-navigation/core';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // import * as S from './styled';
 function Navigation({children}) {
-  const {navigation} = useNavigation();
+  const navigation = useNavigation();
   const menuList = [
     {
       title: 'Home',
       icon: '',
       menu: SITE_MAP.INDEX.menu,
-      path: SITE_MAP.INDEX.name,
+      name: SITE_MAP.INDEX.name,
     },
     {
       title: 'Order',
       icon: '',
       menu: SITE_MAP.CONTACT.menu,
-      path: SITE_MAP.CONTACT.name,
+      name: SITE_MAP.CONTACT.name,
     },
     {
       title: 'Product',
@@ -41,7 +41,8 @@ function Navigation({children}) {
       name: SITE_MAP.LOGIN,
     },
   ];
-  const onPressItem = () => name => {
+  const onPressItem = name => () => {
+    // console.log(name);
     navigation.push(name);
   };
   return (
@@ -50,12 +51,14 @@ function Navigation({children}) {
 
       <View style={styles.container}>
         {menuList.map(({title, icon, menu, name}, index) => (
-          <Box onPress={onPressItem(name)} key={index}>
-            <View style={styles.item}>
-              <Image source={HomeIcon} style={styles.img} />
-              <Text>{title}</Text>
-            </View>
-          </Box>
+          <View
+            style={styles.item}
+            onStartShouldSetResponder={onPressItem(name)}
+            on
+            key={index}>
+            <Image source={HomeIcon} style={styles.img} />
+            <Text>{title}</Text>
+          </View>
         ))}
       </View>
     </View>

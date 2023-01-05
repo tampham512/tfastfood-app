@@ -4,7 +4,9 @@ import Navigation from 'src/components/Navigation';
 function Index() {
   return (
     <Navigation>
-      <Text>Home</Text>
+      <View>
+        <Text>Home</Text>
+      </View>
     </Navigation>
   );
 }
