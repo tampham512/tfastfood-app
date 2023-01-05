@@ -9,16 +9,16 @@ const Register = lazy(() => import('../pages/Register'));
 const Home = lazy(() => import('../pages/Home'));
 const Contacts = lazy(() => import('../pages/Contacts'));
 
-const navigatorList = [
-  {
-    path: SITE_MAP.INDEX.path,
-    Component: Home,
-  },
-  {
-    path: SITE_MAP.CONTACT.path,
-    Component: Contacts,
-  },
-];
+// const navigatorList = [
+//   {
+//     path: SITE_MAP.INDEX.path,
+//     Component: Home,
+//   },
+//   {
+//     path: SITE_MAP.CONTACT.path,
+//     Component: Contacts,
+//   },
+// ];
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
   return (
@@ -27,6 +27,8 @@ const AppStack = () => {
       initialRouteName={SITE_MAP.INDEX.name}>
       <Stack.Screen name={SITE_MAP.INDEX.name} component={Home} />
       <Stack.Screen name={SITE_MAP.CONTACT.name} component={Contacts} />
+      <Stack.Screen name={SITE_MAP.LOGIN} component={Login} />
+      <Stack.Screen name={SITE_MAP.REGISTER} component={Register} />
     </Stack.Navigator>
   );
 };

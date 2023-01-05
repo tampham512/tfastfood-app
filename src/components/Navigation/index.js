@@ -11,22 +11,22 @@ function Navigation({children}) {
   const {navigation} = useNavigation();
   const menuList = [
     {
-      title: 'Trang Chủ',
+      title: 'Home',
       icon: '',
       menu: SITE_MAP.INDEX.menu,
       path: SITE_MAP.INDEX.name,
     },
     {
-      title: 'Contacts',
+      title: 'Order',
       icon: '',
       menu: SITE_MAP.CONTACT.menu,
       path: SITE_MAP.CONTACT.name,
     },
     {
-      title: 'QR-Code Rửa Xe',
+      title: 'Product',
       icon: '',
-      menu: SITE_MAP.INDEX.name,
-      name: SITE_MAP.INDEX.name,
+      menu: SITE_MAP.PRODUCT.name,
+      name: SITE_MAP.PRODUCT.menu,
     },
     {
       title: 'Chat',
@@ -35,7 +35,7 @@ function Navigation({children}) {
       name: SITE_MAP.INDEX.name,
     },
     {
-      title: 'Tài Khoản',
+      title: 'Account',
       icon: '',
       menu: '',
       name: SITE_MAP.LOGIN,

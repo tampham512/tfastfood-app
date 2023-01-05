@@ -7,6 +7,10 @@ export const SITE_MAP = {
     name: 'contact',
     menu: 'contact',
   },
+  PRODUCT: {
+    name: 'product',
+    menu: 'product',
+  },
   LOGIN: 'login',
   REGISTER: 'register',
 };
