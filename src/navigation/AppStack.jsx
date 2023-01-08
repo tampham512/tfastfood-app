@@ -14,6 +14,9 @@ import Constant from 'src/controller/Constant';
 import Details from 'src/pages/Details';
 import Address from 'src/pages/Address';
 import Profile from 'src/pages/Profile';
+import Favorite from 'src/pages/Favorite';
+import ProductsList from 'src/pages/ProductsList';
+
 const Drawer = createDrawerNavigator();
 const AppStack = () => {
   return (
@@ -87,6 +90,24 @@ const AppStack = () => {
       <Drawer.Screen
         name={SITE_MAP.PROFILE}
         component={Profile}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name={SITE_MAP.FAVORITE}
+        component={Favorite}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name={SITE_MAP.PRODUCT_LIST}
+        component={ProductsList}
         options={{
           drawerIcon: ({color}) => (
             <Ionicons name="timer-outline" size={22} color={color} />

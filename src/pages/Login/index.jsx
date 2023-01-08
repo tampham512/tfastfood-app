@@ -16,7 +16,7 @@ import GooglePlusIcon from '../../assets/Icons/google-plus.png';
 
 import {SITE_MAP} from '../../utils/constants/Path';
 import {useDispatch, useSelector} from 'react-redux';
-import {login, isLoginIn} from 'src/redux/slices/authSlice';
+import {login, isLoginIn, logout} from 'src/redux/slices/authSlice';
 
 const options = [
   {value: 0, key: 0, name: 'Cá Nhân', color: 'cyan.100'},
