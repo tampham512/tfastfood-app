@@ -14,4 +14,7 @@ export const SITE_MAP = {
   INTRO: 'intro',
   LOGIN: 'login',
   REGISTER: 'register',
+  DETAILS: 'DETAILS',
+  PROFILE: 'PROFILE',
+  ADDRESS: 'ADDRESS',
 };
