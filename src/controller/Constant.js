@@ -1,9 +1,12 @@
 export default {
   color: {
-    main: '#f55a99',
+    main: '#fe724c',
     background: '#FFFFFF',
+
     text: '#adacac',
     black: '#000000',
+    white: '#fff',
+    gray: '#333',
   },
   images: {
     // bellActive: require('../assets/images/ic_bell_active.png'),
