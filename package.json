@@ -17,10 +17,7 @@
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/core": "^6.4.5",
-<<<<<<< HEAD
-=======
     "@react-navigation/drawer": "^6.1.8",
->>>>>>> f73691862f6b16f4925a661f9a95e278a2413ebb
     "@react-navigation/native": "^6.1.1",
     "@react-navigation/native-stack": "^6.9.7",
     "@reduxjs/toolkit": "^1.6.0",
