@@ -11,6 +11,7 @@ export const SITE_MAP = {
     name: 'product',
     menu: 'product',
   },
+  INTRO: 'intro',
   LOGIN: 'login',
   REGISTER: 'register',
 };

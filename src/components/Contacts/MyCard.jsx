@@ -23,9 +23,9 @@ export default MyCard;
 
 const styles = StyleSheet.create({
   h1: {
-    fontSize: 30,
-    color: Constant.color.black,
-    fontWeight: 'bold',
+    // fontSize: 30,
+    // color: constant.color.black,
+    // fontWeight: 'bold',
   },
   img: {
     width: '60%',

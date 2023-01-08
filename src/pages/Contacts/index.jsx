@@ -9,15 +9,13 @@ import {H1} from 'src/components/Heading/Heading';
 
 function index() {
   return (
-    <Navigation>
-      <View style={{flex: 1}}>
-        <H1>Contacts</H1>
-        <MyCard />
-        <ItemContact />
-        <ItemContact />
-        <ItemContact />
-      </View>
-    </Navigation>
+    <View style={{flex: 1}}>
+      <H1>Contacts</H1>
+      <MyCard />
+      <ItemContact />
+      <ItemContact />
+      <ItemContact />
+    </View>
   );
 }
 
