@@ -1,12 +1,12 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import {AuthAPI, LoginAPI, RegisterAPI} from 'src/services';
 // import {activeMenu, auth} from 'src/redux/slices';
-import activeMenu from 'src/redux/slices/activeMenuSlice';
-import auth from 'src/redux/slices/authSlice';
+import activeMenuSlice from 'src/redux/slices/activeMenuSlice';
+import authSlice from 'src/redux/slices/authSlice';
 
 const rootReducer = combineReducers({
-  activeMenu,
-  auth,
+  activeMenu: activeMenuSlice,
+  auth: authSlice,
 
   [AuthAPI.reducerPath]: AuthAPI.reducer,
   [LoginAPI.reducerPath]: LoginAPI.reducer,

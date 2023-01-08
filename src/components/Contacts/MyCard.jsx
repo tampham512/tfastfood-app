@@ -1,6 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Image, StyleSheet, Text} from 'react-native';
+import Constant from 'src/controller/Constant';
 
 function MyCard() {
   return (
@@ -21,7 +22,6 @@ function MyCard() {
 export default MyCard;
 
 const styles = StyleSheet.create({
-  containerCenter: {},
   h1: {
     // fontSize: 30,
     // color: constant.color.black,
