@@ -50,7 +50,7 @@ function Login() {
   const onSubmit = data => {
     console.log('🚀 ~ file: index.js:48 ~ onSubmit ~ data', data);
     try {
-      dispatch(login());
+      dispatch(login(data));
     } catch (error) {
       console.log(error);
     }

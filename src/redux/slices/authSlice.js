@@ -10,43 +10,43 @@ const initialState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducer: {
+  reducers: {
     login: (state, action) => {
       // const {username, password} = action.payload;
       console.log('🚀 ~ file: authSlice.js:16 ~ password', action);
       // console.log('🚀 ~ file: authSlice.js:16 ~ username', username);
 
-      // LoginAPI.useGetTokenLoginMutation({username, password})
-      //   .unwrap()
-      //   .then(data => {
-      //     state.accessToken = data.token;
-      //     AsyncStorage.setItem('accessToken', JSON.stringify(data?.token));
-      //     AuthAPI.useGetUserQuery()
-      //       .unwrap()
-      //       .then(dataUser => {
-      //         state.userInfo = dataUser?.user;
-      //         AsyncStorage.setItem('userInfo', JSON.stringify(dataUser?.user));
-      //       })
-      //       .catch(err => {
-      //         console.log(err);
-      //       });
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
-    },
-    logout: (state, action) => {
-      AuthAPI.useLogoutMutation()
-        .unwrap()
-        .then(() => {
-          state.userInfo = null;
-          state.accessToken = null;
-          AsyncStorage.removeItem('userInfo');
-          AsyncStorage.removeItem('accessToken');
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      //   LoginAPI.useGetTokenLoginMutation({username, password})
+      //     .unwrap()
+      //     .then(data => {
+      //       state.accessToken = data.token;
+      //       AsyncStorage.setItem('accessToken', JSON.stringify(data?.token));
+      //       AuthAPI.useGetUserQuery()
+      //         .unwrap()
+      //         .then(dataUser => {
+      //           state.userInfo = dataUser?.user;
+      //           AsyncStorage.setItem('userInfo', JSON.stringify(dataUser?.user));
+      //         })
+      //         .catch(err => {
+      //           console.log(err);
+      //         });
+      //     })
+      //     .catch(err => {
+      //       console.log(err);
+      //     });
+      // },
+      // logout: (state, action) => {
+      //   AuthAPI.useLogoutMutation()
+      //     .unwrap()
+      //     .then(() => {
+      //       state.userInfo = null;
+      //       state.accessToken = null;
+      //       AsyncStorage.removeItem('userInfo');
+      //       AsyncStorage.removeItem('accessToken');
+      //     })
+      //     .catch(err => {
+      //       console.log(err);
+      //     });
     },
     register: (state, action) => {
       const {username, password, confirm_password, email} = action.payload;
