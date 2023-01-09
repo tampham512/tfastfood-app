@@ -2,89 +2,71 @@ import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import Navigation from 'src/components/Navigation';
 import {useNavigation} from '@react-navigation/core';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Profile = () => {
   const navigation = useNavigation();
   return (
     <Navigation>
-      <View style={{paddingBottom: 60, backgroundColor: '#fff'}}>
+      <View style={{paddingBottom: 20, backgroundColor: 'white'}}>
         <ScrollView>
-          <View style={{position: 'absolute', top: 0, left: 0}}>
+          <View style={{position: 'relative'}}>
             <TouchableOpacity>
-              {/* <Image source={require('../../assets/Icons/Group.png')}></Image> */}
+              <Image
+                style={{height: 240, width: '100%'}}
+                source={require('../../assets/Icons/Group.png')}></Image>
             </TouchableOpacity>
           </View>
           <View
             style={{
-              alignItems: 'center',
-            }}>
-            {/* <Image
-              source={''}
-              style={{height: 108, width: 108, borderRadius: 100}}></Image> */}
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: '600',
-                color: '#000000',
-                marginTop: 13,
-                marginBottom: 2,
-              }}>
-              kingbct
-            </Text>
-            <Text
-              style={{fontSize: 14, fontWeight: '400', color: '#9796A1'}}
-              // onPress={() => navigation.navigate('home')}
-            >
-              Edit Profile
-            </Text>
-          </View>
-          {/* <View
-            style={{
-              marginBottom: 50,
-              marginTop: 20,
-              marginLeft: 20,
-              backgroundColor: '#fff',
-              width: 50,
-              borderRadius: 12,
-              height: 50,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderWidth: 1,
-              borderColor: 'red',
-            }}>
-            <TouchableOpacity>
-              <Image
-                source={require('../../assets/Icons/back.png')}
-                style={{height: 26, width: 26}}></Image>
-            </TouchableOpacity>
-          </View> */}
-          {/* <View
-            style={{
-              alignItems: 'center',
-              marginBottom: 34,
+              position: 'absolute',
+              top: '16%',
+              left: '36%',
+              zIndex: 9,
             }}>
             <Image
-              source={require('../../assets/profile.jpg')}
-              style={{height: 108, width: 108, borderRadius: 100}}></Image>
-            <Text
+              source={require('../../assets/Icons/logo_user.png')}
               style={{
-                fontSize: 20,
-                fontWeight: '600',
-                color: '#000000',
-                marginTop: 13,
-                marginBottom: 2,
-              }}>
-              kingbct
-            </Text>
-            <Text
-              style={{fontSize: 14, fontWeight: '400', color: '#9796A1'}}
-              // onPress={() => navigation.navigate('home')}
-            >
-              Edit Profile
-            </Text>
+                height: 108,
+                width: 108,
+                borderRadius: 100,
+                borderWidth: 8,
+                borderColor: 'white',
+              }}></Image>
+            <View style={{alignItems: 'center'}}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: '600',
+                  color: '#000000',
+                  marginTop: 6,
+                }}>
+                Eljad Eendaz
+              </Text>
+              <Text
+                style={{fontSize: 14, fontWeight: '400', color: '#9796A1'}}
+                // onPress={() => navigation.navigate('home')}
+              >
+                Edit Profile
+              </Text>
+            </View>
           </View>
-          <View style={{paddingHorizontal: 18, marginBottom: 30}}>
+          <View
+            style={{
+              position: 'absolute',
+              width: 38,
+              height: 38,
+              borderRadius: 12,
+              backgroundColor: 'white',
+              justifyContent: 'center',
+              top: 37,
+              left: 32,
+              alignItems: 'center',
+            }}>
+            <Ionicons name="chevron-back-outline" size={22} color={'black'} />
+          </View>
+          <View
+            style={{paddingHorizontal: 18, marginBottom: 30, marginTop: 90}}>
             <Text
               style={{
                 fontSize: 16,
@@ -158,7 +140,7 @@ const Profile = () => {
                 +1 (783) 0986 8786
               </Text>
             </View>
-          </View> */}
+          </View>
         </ScrollView>
       </View>
     </Navigation>
