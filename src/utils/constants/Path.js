@@ -17,11 +17,6 @@ export const SITE_MAP = {
   DETAILS: 'DETAILS',
   PROFILE: 'PROFILE',
   ADDRESS: 'ADDRESS',
-<<<<<<< HEAD
-  ADDRESS: 'ADDRESS',
   PRODUCT_LIST: 'Product List',
-
   FAVORITE: 'Favorite',
-=======
->>>>>>> dda5c9c (upload code)
 };
