@@ -1,5 +1,6 @@
 import React, {useCallback} from 'react';
-import ComboBox from 'react-native-combobox';
+import { SelectList } from 'react-native-dropdown-select-list'
+import ComboBox from 'react-native-combobox'; /*npm i react-native-combobox*/
 import {
   Image,
   SafeAreaView,
@@ -15,54 +16,54 @@ import {
   Button,
 } from 'react-native';
 
-const Favorite = () => {
-  const [active, setActive] = React.useState(1);
+const Categories = () => {
+    const [selected, setSelected] = React.useState("");
+  
+  const data = [
+      {key:'1', value:'Mobiles', disabled:true},
+      {key:'2', value:'Appliances'},
+      {key:'3', value:'Cameras'},
+      {key:'4', value:'Computers', disabled:true},
+      {key:'5', value:'Vegetables'},
+      {key:'6', value:'Diary Products'},
+      {key:'7', value:'Drinks'},
+  ]
+  const [selectedValue, setSelectedValue] = React.useState('option 1');
+
+  const values = ['option 1', 'option 2', 'option 3', 'option 4', 'option 5'];
+
   return (
     <View style={styles.container}>
       <View style={[styles.heder, {flexDirection: 'row'}]}>
-        <TouchableOpacity style={styles.buttonback}>
-          <Image
-            style={styles.FaceLogoback}
-            source={require('../../assets/Icons/3.png')}
-          />
-        </TouchableOpacity>
-        <Text style={styles.fast}>Favorite</Text>
+        <View style={[styles.back, {flex: 1, flexDirection: 'column'}]}>
+          <TouchableOpacity style={styles.buttonback}>
+            <Image
+              style={styles.FaceLogoback}
+              source={require('../../assets/Icons/3.png')}
+            />
+          </TouchableOpacity>
+          <Text style={styles.fast}>Fast</Text>
+          <Text style={styles.food}>Food</Text>
+          <Text style={styles.tyet}>80 type of pizza</Text>
+        </View>
 
-        <TouchableOpacity style={styles.buttonCaNhan}>
-          <Image
-            style={styles.FaceLogo}
-            source={require('../../assets/Icons/13.png')}
-          />
-        </TouchableOpacity>
+        <Image
+          style={[styles.FaceLogo, {flex: 1.5}]}
+          source={require('../../assets/Icons/1.png')}
+        />
       </View>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          width: '100%',
-          marginBottom: 10,
-        }}>
-        <TouchableOpacity
-          onPress={() => setActive(1)}
-          style={{
-            backgroundColor: active === 1 ? '#FE724C' : 'blue',
-            padding: 10,
-            borderRadius: 10,
-            marginRight: 10,
-          }}>
-          <Text style={{color: '#fff'}}>Foods Item</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setActive(2)}
-          style={{
-            backgroundColor: active === 2 ? '#FE724C' : 'blue',
-            padding: 10,
-            borderRadius: 10,
-            color: '#fff',
-          }}>
-          <Text style={{color: '#fff'}}>Restoren</Text>
-        </TouchableOpacity>
+      <View style={[styles.Main, {flexDirection: 'row'}]}>
+        <View style={[styles.text1]}>
+          <Text style={styles.tyett}>Short by:</Text>
+        </View>
+        <View style={styles.ComboBox}>
+          {/* <ComboBox values={values} onValueSelect={setSelectedValue} /> */}
+          <SelectList 
+        setSelected={(val) => setSelected(val)} 
+        data={data} 
+        save="value"
+         />
+        </View>
       </View>
       <ScrollView style={styles.ScrollView}>
         <View style={styles.ListMon}>
@@ -221,20 +222,35 @@ const styles = StyleSheet.create({
     width: 60,
     margin: 10,
   },
-  FaceLogo: {
-    height: 45,
-    width: 45,
-    margin: 20,
-    marginLeft: 110,
-  },
 
   fast: {
     color: '#272D2F',
-    marginTop: 25,
-    marginLeft: 70,
-    fontSize: 24,
+    marginLeft: 30,
+    fontSize: 44,
     fontWeight: 'bold',
-    justifyContent: 'center',
+  },
+  food: {
+    color: '#FE724C',
+    marginLeft: 30,
+    fontSize: 50,
+    fontWeight: 'bold',
+  },
+  tyet: {
+    color: '#9796A1',
+    marginLeft: 30,
+    fontSize: 18,
+  },
+  tyett: {
+    color: '#111719',
+    marginLeft: 30,
+    marginTop: 20,
+    fontSize: 16,
+  },
+  ComboBox: {
+    Color: '#FE724C',
+    height: 100,
+    marginLeft: 15,
+    marginTop: 5
   },
 
   namemon: {
@@ -285,4 +301,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Favorite;
+export default Categories;
