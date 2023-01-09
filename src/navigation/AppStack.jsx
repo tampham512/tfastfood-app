@@ -16,6 +16,7 @@ import Address from 'src/pages/Address';
 import Profile from 'src/pages/Profile';
 import Favorite from 'src/pages/Favorite';
 import ProductsList from 'src/pages/ProductsList';
+import Categories from 'src/pages/Categories';
 
 const Drawer = createDrawerNavigator();
 const AppStack = () => {
@@ -107,7 +108,7 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name={SITE_MAP.PRODUCT_LIST}
-        component={ProductsList}
+        component={Categories}
         options={{
           drawerIcon: ({color}) => (
             <Ionicons name="timer-outline" size={22} color={color} />

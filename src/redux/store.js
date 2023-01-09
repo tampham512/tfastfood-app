@@ -8,7 +8,7 @@ import {
   OrderAPI,
   ProvincesAPI,
 } from 'src/services';
-import {favoriteSlice, cartSlice} from 'src/redux/slices';
+import {favoriteSlice} from 'src/redux/slices';
 import activeMenuSlice from 'src/redux/slices/activeMenuSlice';
 import authSlice from 'src/redux/slices/authSlice';
 
@@ -16,7 +16,7 @@ const rootReducer = combineReducers({
   activeMenu: activeMenuSlice,
   auth: authSlice,
   favorite: favoriteSlice,
-  cart: cartSlice,
+  // cart: cartSlice,
 
   [AuthAPI.reducerPath]: AuthAPI.reducer,
   [LoginAPI.reducerPath]: LoginAPI.reducer,
