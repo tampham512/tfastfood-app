@@ -19,6 +19,8 @@ import {
 } from 'native-base';
 import {auth} from 'src/redux/slices';
 import {autoBatchEnhancer} from '@reduxjs/toolkit';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Constant from 'src/controller/Constant';
 
 const Address = () => {
   const navigation = useNavigation();
@@ -35,28 +37,30 @@ const Address = () => {
         <ScrollView>
           <View
             style={{
-              backgroundColor: '#fff',
-              width: 50,
-              borderRadius: 12,
-              height: 50,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderWidth: 1,
-              borderColor: 'red',
               position: 'absolute',
-              zIndex: 9,
+              width: 38,
+              height: 38,
+              borderRadius: 12,
+              backgroundColor: 'white',
+              justifyContent: 'center',
+              top: 37,
+              left: 32,
+              alignItems: 'center',
+              shadowColor: 'red',
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.2,
+              shadowRadius: 5,
+              elevation: 5,
             }}>
-            <TouchableOpacity>
-              {/* <Image
-                source={require('../../assets/Icons/back.png')}
-                style={{height: 26, width: 26}}></Image> */}
-            </TouchableOpacity>
+            <Ionicons name="chevron-back-outline" size={22} color={'black'} />
           </View>
           <Text
             style={{
               textAlign: 'center',
-              fontWeight: '800',
+              fontWeight: '400',
               fontSize: 18,
               color: '#111719',
               marginBottom: 44,
