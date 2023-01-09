@@ -3,12 +3,11 @@ import {baseQueryProvince} from './baseQuery';
 
 export const ProvincesAPI = createApi({
   baseQuery: baseQueryProvince,
-  reducerPath: 'Provinces',
+  reducerPath: 'ProvincesAPI',
   endpoints: builder => ({
     getProvinces: builder.query({
       query: params => ({
         url: '/get-infoshop/?depth=3',
-        params,
       }),
     }),
   }),

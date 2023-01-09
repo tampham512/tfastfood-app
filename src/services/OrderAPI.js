@@ -3,7 +3,7 @@ import {baseQuery} from './baseQuery';
 
 export const OrderAPI = createApi({
   baseQuery: baseQuery,
-  reducerPath: 'Order',
+  reducerPath: 'OrderAPI',
   endpoints: builder => ({
     orderBill: builder.mutation({
       query: body => ({

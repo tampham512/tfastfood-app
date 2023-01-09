@@ -1,9 +1,9 @@
 import {createApi} from '@reduxjs/toolkit/dist/query/react';
-import {baseQuery} from './baseQuery';
+import {baseQuery, baseQueryWithoutToken} from './baseQuery';
 
 export const ProductAPI = createApi({
-  baseQuery: baseQuery,
-  reducerPath: 'Product',
+  reducerPath: 'ProductAPI',
+  baseQuery: baseQueryWithoutToken,
   endpoints: builder => ({
     getProduct: builder.query({
       query: params => ({
@@ -13,7 +13,7 @@ export const ProductAPI = createApi({
     }),
     getDetailProduct: builder.query({
       query: params => ({
-        url: `slug-product/${params?.slug}`,
+        url: `/slug-product/${params?.slug}`,
       }),
     }),
     getCategory: builder.query({

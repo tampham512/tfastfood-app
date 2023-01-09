@@ -3,7 +3,7 @@ import {baseQuery} from './baseQuery';
 
 export const InfoShopAPI = createApi({
   baseQuery: baseQuery,
-  reducerPath: 'InfoShop',
+  reducerPath: 'InfoShopAPI',
   endpoints: builder => ({
     getInfoShop: builder.query({
       query: params => ({

@@ -3,7 +3,7 @@ import {baseQuery} from './baseQuery';
 
 export const AuthAPI = createApi({
   baseQuery: baseQuery,
-  reducerPath: 'Auth',
+  reducerPath: 'AuthAPI',
   endpoints: builder => ({
     getUser: builder.query({
       query: params => ({

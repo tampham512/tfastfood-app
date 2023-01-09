@@ -3,7 +3,7 @@ import {baseQueryWithoutToken} from './baseQuery';
 
 export const LoginAPI = createApi({
   baseQuery: baseQueryWithoutToken,
-  reducerPath: 'Login',
+  reducerPath: 'LoginAPI',
   endpoints: builder => ({
     getTokenLogin: builder.mutation({
       query: body => ({

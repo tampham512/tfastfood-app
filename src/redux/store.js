@@ -30,9 +30,9 @@ export const makeStore = () => {
   return configureStore({
     reducer: rootReducer,
     middleware: getDefaultMiddleware =>
-      getDefaultMiddleware({
-        serializableCheck: false,
-      }),
+      getDefaultMiddleware()
+        .concat(ProductAPI.middleware)
+        .concat(ProvincesAPI.middleware),
   });
 };
 const store = makeStore();

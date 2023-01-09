@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  FlatList,
 } from 'react-native';
 import Header from 'src/components/Header';
 import Constant from 'src/controller/Constant';
@@ -16,17 +17,39 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Categoty01Img from 'src/assets/HomeIcons/01.png';
 import Categoty02Img from 'src/assets/HomeIcons/02.png';
 import Categoty03Img from 'src/assets/HomeIcons/03.png';
+import {useGetCategoryQuery, useGetProductQuery} from 'src/services/ProductAPI';
+import {useGetProvincesQuery} from 'src/services/ProvincesAPI';
+import {useEffect} from 'react';
+const IMAGE_CATEGORY = {
+  appetizer: Categoty01Img,
+  pizza: Categoty02Img,
+  salad: Categoty03Img,
+  drinks: Categoty01Img,
+};
 
 function Index() {
-  const navigation = useNavigation();
   const [valueSearch, setValueSearch] = useState('');
+  const {data: products, isLoading: isLoadingProduct} = useGetProductQuery(
+    {},
+    {refetchOnMountOrArgChange: true},
+  );
 
+  const {data: category, isLoading: isLoadingCategory} = useGetCategoryQuery(
+    {},
+    {refetchOnMountOrArgChange: true},
+  );
+  console.log('🚀 ~ file: index.jsx:25 ~ Index ~ products', products);
+
+  console.log('🚀 ~ file: index.jsx:31 ~ Index ~ category', category);
   const onChangeSearch = value => {
     console.log(value);
     setValueSearch(value);
   };
   const handleClickSearch = () => {
     console.log(valueSearch);
+  };
+  const handleClickCategory = slug => () => {
+    console.log(slug);
   };
   return (
     <View style={{backgroundColor: Constant.color.white}}>
@@ -61,16 +84,26 @@ function Index() {
             size={42}
             color={Constant.color.main}
             style={{
-              marginTop: 2,
-              marginLeft: 5,
+              position: 'absolute',
+              right: 8,
+              marginTop: 4,
             }}
           />
         </View>
-        <ScrollView horizontal={true} nestedScrollEnabled={false}>
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.category_item}>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignContent: 'center',
+            marginRight: -20,
+          }}>
+          {category?.categorys?.map(item => (
+            <View
+              style={styles.category_item}
+              onStartShouldSetResponder={handleClickCategory(item.slug)}>
               <Image
-                source={Categoty01Img}
+                source={IMAGE_CATEGORY?.[item.slug]}
                 style={{
                   height: 50,
                   width: 50,
@@ -83,68 +116,22 @@ function Index() {
               />
               <Text
                 style={{
-                  textAlign: 'center',
+                  color: Constant.color.white,
+                  marginTop: 14,
+                  textTransform: 'capitalize',
                 }}>
-                Burger
+                {item.slug}
               </Text>
             </View>
-            <View style={styles.category_item}>
-              <Image
-                source={Categoty02Img}
-                style={{
-                  height: 50,
-                  width: 50,
-                  borderRadius: 10000,
-                }}
-              />
-              <Text>Burger</Text>
-            </View>
-            <View style={styles.category_item}>
-              <Image
-                source={Categoty03Img}
-                style={{
-                  height: 50,
-                  width: 50,
-                  borderRadius: 10000,
-                }}
-              />
-              <Text>Burger</Text>
-            </View>
-            <View style={styles.category_item}>
-              <Image
-                source={Categoty01Img}
-                style={{
-                  height: 50,
-                  width: 50,
-                  borderRadius: 10000,
-                }}
-              />
-              <Text>Burger</Text>
-            </View>
-            <View style={styles.category_item}>
-              <Image
-                source={Categoty02Img}
-                style={{
-                  height: 50,
-                  width: 50,
-                  borderRadius: 10000,
-                }}
-              />
-              <Text>Burger</Text>
-            </View>
-            <View style={styles.category_item}>
-              <Image
-                source={Categoty03Img}
-                style={{
-                  height: 50,
-                  width: 50,
-                  borderRadius: 10000,
-                }}
-              />
-              <Text>Burger</Text>
-            </View>
-          </View>
-        </ScrollView>
+          ))}
+        </View>
+        <ScrollView
+          horizontal={true}
+          nestedScrollEnabled={false}
+          showsHorizontalScrollIndicator={false}
+          style={{
+            paddingVertical: 10,
+          }}></ScrollView>
       </View>
     </View>
   );
@@ -161,20 +148,23 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   category_item: {
-    backgroundColor: Constant.color.white,
-    height: 100,
-    borderRadius: 8,
+    height: 120,
+    borderRadius: 1000,
     shadowColor: Constant.color.gray,
     shadowOffset: {
       width: 0,
       height: 0,
     },
+    paddingTop: 8,
     flexDirection: 'column',
     width: 70,
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 5,
-    justifyContent: 'center',
-    // marginRight: 5,
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: Constant.color.main,
+    marginRight: 20,
+    color: Constant.color.white,
   },
 });
