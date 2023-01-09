@@ -14,12 +14,9 @@ import Constant from 'src/controller/Constant';
 import Details from 'src/pages/Details';
 import Address from 'src/pages/Address';
 import Profile from 'src/pages/Profile';
-<<<<<<< HEAD
 import Favorite from 'src/pages/Favorite';
 import ProductsList from 'src/pages/ProductsList';
 
-=======
->>>>>>> dda5c9c (upload code)
 const Drawer = createDrawerNavigator();
 const AppStack = () => {
   return (
@@ -99,7 +96,6 @@ const AppStack = () => {
           ),
         }}
       />
-<<<<<<< HEAD
       <Drawer.Screen
         name={SITE_MAP.FAVORITE}
         component={Favorite}
@@ -118,8 +114,6 @@ const AppStack = () => {
           ),
         }}
       />
-=======
->>>>>>> dda5c9c (upload code)
     </Drawer.Navigator>
   );
 };

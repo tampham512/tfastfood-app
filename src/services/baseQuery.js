@@ -16,3 +16,6 @@ export const baseQuery = fetchBaseQuery({
 export const baseQueryWithoutToken = fetchBaseQuery({
   baseUrl: process.env.REACT_APP_API_URL + '',
 });
+export const baseQueryProvince = fetchBaseQuery({
+  baseUrl: process.env.REACT_APP_API_URL_PROVINCE + '',
+});

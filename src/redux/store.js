@@ -1,5 +1,13 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
-import {AuthAPI, LoginAPI, RegisterAPI} from 'src/services';
+import {
+  AuthAPI,
+  LoginAPI,
+  RegisterAPI,
+  InfoShopAPI,
+  ProductAPI,
+  OrderAPI,
+  ProvincesAPI,
+} from 'src/services';
 // import {activeMenu, auth} from 'src/redux/slices';
 import activeMenuSlice from 'src/redux/slices/activeMenuSlice';
 import authSlice from 'src/redux/slices/authSlice';
@@ -11,6 +19,10 @@ const rootReducer = combineReducers({
   [AuthAPI.reducerPath]: AuthAPI.reducer,
   [LoginAPI.reducerPath]: LoginAPI.reducer,
   [RegisterAPI.reducerPath]: RegisterAPI.reducer,
+  [InfoShopAPI.reducerPath]: InfoShopAPI.reducer,
+  [ProductAPI.reducerPath]: ProductAPI.reducer,
+  [OrderAPI.reducerPath]: OrderAPI.reducer,
+  [ProvincesAPI.reducerPath]: ProvincesAPI.reducer,
 });
 export const makeStore = () => {
   return configureStore({
