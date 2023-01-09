@@ -5,7 +5,7 @@ const items = AsyncStorage.getItem('cartItems') || [];
 const initialState = {
   value: items,
 };
-export const cartItemsSlice = createSlice({
+export const cartSlice = createSlice({
   name: 'cartItems',
   initialState,
   reducers: {
@@ -76,6 +76,6 @@ const sortItems = arr =>
   arr.sort((a, b) => {
     return a.id - b.id;
   });
-const {actions, reducer} = cartItemsSlice;
+const {actions, reducer} = cartSlice;
 export const {addItems, updateItems, removeItem} = actions;
 export default reducer;

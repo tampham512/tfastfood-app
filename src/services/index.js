@@ -5,5 +5,4 @@ export {RegisterAPI} from './RegisterAPI';
 export {InfoShopAPI} from './InfoShopAPI';
 export {ProductAPI} from './ProductAPI';
 export {OrderAPI} from './OrderAPI';
-
 export {ProvincesAPI} from './ProvincesAPI';
