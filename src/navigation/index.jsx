@@ -13,8 +13,8 @@ const Index = () => {
   return (
     <NavigationContainer>
       {/* {accessToken ? <AppStack /> : <AuthStack />} */}
-      {/* <AuthStack /> */}
-      <AppStack />
+      <AuthStack />
+      {/* <AppStack /> */}
     </NavigationContainer>
   );
 };
