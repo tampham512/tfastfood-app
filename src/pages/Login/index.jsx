@@ -16,9 +16,13 @@ import GooglePlusIcon from '../../assets/Icons/google-plus.png';
 
 import {SITE_MAP} from '../../utils/constants/Path';
 import {useDispatch, useSelector} from 'react-redux';
-import {login, isLoginIn} from 'src/redux/slices/authSlice';
+
+
 import CONSTANT from '../../controller/Constant';
 import { color } from 'native-base/lib/typescript/theme/styled-system';
+
+import {login, isLoginIn, logout} from 'src/redux/slices/authSlice';
+
 
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
@@ -66,7 +70,7 @@ function Login({navigation}) {
   const onSubmit = data => {
     console.log('🚀 ~ file: index.js:48 ~ onSubmit ~ data', data);
     try {
-      dispatch(login());
+      dispatch(login(data));
     } catch (error) {
       console.log(error);
     }

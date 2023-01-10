@@ -4,7 +4,7 @@ export default {
     background: '#FFFFFF',
 
     text: '#adacac',
-    black: '#000000',
+    black: '#323643',
     organe: '#FE724C',
     white: '#fff',
     gray: '#333',
@@ -15,6 +15,7 @@ export default {
     // bellActive: require('../assets/images/ic_bell_active.png'),
     // bell: require('../assets/images/ic_bell.png'),
     background_intro: require('../assets/Icons/background_intro.png'),
+
     ic_Facebook : require('../assets/Icons/ic_facebook.png'),
     ic_Google: require('../assets/Icons/ic_google.png'),
     eye: require('../assets/Icons/eye.png'),
@@ -23,6 +24,7 @@ export default {
     ecl: require('../assets/Icons/ecl.png'),
     pre: require('../assets/Icons/pre.png'),
     ic_eyeClose: require('../assets/Icons/ic_eyeClose.png')
+
   },
   fonts: {
     notoSansJPBold: 'NotoSansJP-Bold',
