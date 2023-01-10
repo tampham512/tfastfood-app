@@ -15,8 +15,15 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AvataUser from 'src/assets/Icons/logo_user.png';
 import Constant from 'src/controller/Constant';
+import {useDispatch} from 'react-redux';
+import {logout} from 'src/redux/slices/authSlice';
 
 const CustomDrawer = props => {
+  const dispatch = useDispatch();
+  const onPressLogout = () => {
+    console.log('dispatch');
+    dispatch(logout());
+  };
   return (
     <View style={{flex: 1}}>
       <DrawerContentScrollView
@@ -71,7 +78,7 @@ const CustomDrawer = props => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}} style={{paddingVertical: 15}}>
+        <TouchableOpacity onPress={onPressLogout} style={{paddingVertical: 15}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Ionicons name="exit-outline" size={22} />
             <Text

@@ -32,7 +32,12 @@ export const makeStore = () => {
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware()
         .concat(ProductAPI.middleware)
-        .concat(ProvincesAPI.middleware),
+        .concat(ProvincesAPI.middleware)
+        .concat(LoginAPI.middleware)
+        .concat(RegisterAPI.middleware)
+        .concat(InfoShopAPI.middleware)
+        .concat(OrderAPI.middleware)
+        .concat(AuthAPI.middleware),
   });
 };
 const store = makeStore();

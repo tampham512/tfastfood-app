@@ -28,9 +28,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import CONSTANT from '../../controller/Constant';
 import {color} from 'native-base/lib/typescript/theme/styled-system';
 
-import {login, isLoginIn, logout} from 'src/redux/slices/authSlice';
+import {
+  login,
+  isLoginIn,
+  logout,
+  updateInfoUser,
+} from 'src/redux/slices/authSlice';
 import {useGetTokenLoginMutation} from 'src/services/LoginAPI';
 import {useLazyGetUserQuery} from 'src/services/AuthAPI';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 const SCREEN_WIDTH = Dimensions.get('screen').width;
 
@@ -51,8 +57,9 @@ const schema = yup.object({
 function Login({navigation}) {
   const [isCanSeePassWord, setIsSeePassword] = useState(false);
 
-  const handelSeePassWord = () => {
-    setIsSeePassword(prev => !prev.isCanSeePassWord);
+  const handelSeePassWord = e => {
+    e.stopPropagation();
+    setIsSeePassword(prev => !prev);
   };
   const [loginAccount] = useGetTokenLoginMutation();
   const [getUsers] = useLazyGetUserQuery();
@@ -72,30 +79,39 @@ function Login({navigation}) {
     defaultValue: {category: 0},
   });
   const onSubmit = data => {
-    console.log('🚀 ~ file: index.js:48 ~ onSubmit ~ data', data);
     try {
+      // console.log('await');
       loginAccount(data)
         .unwrap()
         .then(resToken => {
           console.log(resToken);
-          getUsers()
+          const payload = {
+            accessToken: resToken.token,
+          };
+          dispatch(login(payload));
+          getUsers({token: resToken.token})
             .unwrap()
             .then(resUser => {
-              console.log(resUser);
+              const payload = {
+                userInfo: resUser.userInfo,
+              };
+
+              dispatch(updateInfoUser(payload));
+            })
+            .catch(error => {
+              console.log(error);
             });
         })
         .catch(err => {
           console.log(err);
         });
-      dispatch(login(data));
     } catch (error) {
       console.log(error);
     }
-    alert(JSON.stringify(data));
   };
   // const handleRegister = () => alert('Regiter link');
   // const handlePressIconLogin = type => alert(type);
-  console.log('login');
+  // console.log('login');
   return (
     <View style={{backgroundColor: '#FFFFFF', flex: 1}}>
       <View style={styles.imga}>
@@ -124,7 +140,7 @@ function Login({navigation}) {
           <Text style={styles.textconLogin}>Login</Text>
         </View>
         <View style={styles.enterInf}>
-          <Text style={styles.textEM}> E-mail:</Text>
+          {/* <Text style={styles.textEM}> E-mail:</Text>
           <View style={[styles.passWordView, styles.input1]}>
             <TextInput
               placeholder="Your email or phone"
@@ -132,28 +148,44 @@ function Login({navigation}) {
               returnKeyType="next"
               placeholderTextColor="gray"
             />
-          </View>
+          </View> */}
+          <Input
+            control={control}
+            errors={errors}
+            name="username"
+            label="Username:"
+            placeholder="Your Username"
+          />
         </View>
+
         <View style={styles.enterInf}>
-          <Text style={styles.textEM}> Password:</Text>
-          <View style={[styles.passWordView, styles.input1]}>
-            <TextInput
+          {/* <Text style={styles.textEM}> Password:</Text>
+          <View style={[styles.passWordView, styles.input1]}> */}
+          {/* <TextInput
               placeholder="Password"
-              keyboardType="default"
+              keyboardType="default"enterInf
               returnKeyType="done"
               secureTextEntry={isCanSeePassWord}
-            />
-            <TouchableOpacity onPress={handelSeePassWord}>
-              {!isCanSeePassWord ? (
-                <Image source={CONSTANT.images.eye} style={styles.icEye} />
-              ) : (
-                <Image
-                  source={CONSTANT.images.ic_eyeClose}
-                  style={styles.icEye}
-                />
-              )}
-            </TouchableOpacity>
-          </View>
+            /> */}
+          <Input
+            control={control}
+            errors={errors}
+            name="password"
+            label="Password"
+            placeholder="Your Password"
+            secureTextEntry={isCanSeePassWord}
+          />
+          <TouchableOpacity onPress={handelSeePassWord}>
+            {!isCanSeePassWord ? (
+              <Image source={CONSTANT.images.eye} style={styles.icEye} />
+            ) : (
+              <Image
+                source={CONSTANT.images.ic_eyeClose}
+                style={styles.icEye}
+              />
+            )}
+          </TouchableOpacity>
+          {/* </View> */}
         </View>
 
         <View style={styles.forgotView}>
@@ -276,6 +308,10 @@ const styles = StyleSheet.create({
   icEye: {
     height: 12,
     width: 17,
+    position: 'absolute',
+    top: -40,
+    right: 20,
+    color: 'black',
   },
   passWordView: {
     flexDirection: 'row',
@@ -375,8 +411,8 @@ const styles = StyleSheet.create({
     width: 90,
   },
   skipButtonView: {
-    marginTop: -20,
     height: 50,
     width: 50,
+    position: 'absolute',
   },
 });

@@ -12,35 +12,18 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      const {accessToken, userInfo} = action.payload;
+      const {accessToken} = action.payload;
       console.log('🚀 ~ file: authSlice.js:16 ~ password', action);
-      // console.log('🚀 ~ file: authSlice.js:16 ~ username', username);
+
       AsyncStorage.setItem('accessToken', JSON.stringify(accessToken));
-      AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
-      state.userInfo = userInfo;
+
       state.accessToken = accessToken;
-
-      //   LoginAPI.useGetTokenLoginMutation({username, password})
-      //     .unwrap()
-      //     .then(data => {
-      //       state.accessToken = data.token;
-      //       AsyncStorage.setItem('accessToken', JSON.stringify(data?.token));
-      //       AuthAPI.useGetUserQuery()
-      //         .unwrap()
-      //         .then(dataUser => {
-      //           state.userInfo = dataUser?.user;
-      //           AsyncStorage.setItem('userInfo', JSON.stringify(dataUser?.user));
-      //         })
-      //         .catch(err => {
-      //           console.log(err);
-      //         });
-      //     })
-      //     .catch(err => {
-      //       console.log(err);
-      //     });
-      // },
     },
-
+    updateInfoUser: (state, action) => {
+      const {userInfo} = action.payload;
+      state.userInfo = userInfo;
+      AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
+    },
     register: (state, action) => {
       const {username, password, confirm_password, email} = action.payload;
       RegisterAPI.useRegisterAccountMutation({
@@ -79,8 +62,14 @@ const authSlice = createSlice({
         console.log(e);
       }
     },
+    logout: state => {
+      AsyncStorage.removeItem('accessToken');
+      AsyncStorage.removeItem('userInfo');
+      state.accessToken = null;
+      state.userInfo = null;
+    },
   },
 });
 const {actions, reducer} = authSlice;
-export const {login, logout, register} = actions;
+export const {login, logout, register, updateInfoUser} = actions;
 export default reducer;

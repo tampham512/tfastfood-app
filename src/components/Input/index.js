@@ -37,14 +37,17 @@ export default index;
 
 const styles = StyleSheet.create({
   input: {
-    borderBottomWidth: 1,
-    padding: 5,
-    borderColor: '#afb6bd',
-    width: '100%',
-    marginBottom: 20,
+    height: 65,
+    borderColor: '#EEEEEE',
+    borderRadius: 10,
+    borderWidth: 1,
+    padding: 10,
+    backgroundColor: 'white',
   },
   label: {
+    fontWeight: '400',
     fontSize: 16,
-    fontWeight: 'bold',
+    lineHeight: 16,
+    marginBottom: 5,
   },
 });
