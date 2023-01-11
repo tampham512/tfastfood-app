@@ -2,14 +2,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {fetchBaseQuery} from '@reduxjs/toolkit/query';
 
 export const baseQuery = fetchBaseQuery({
-  baseUrl: 'https://tfastge.food.tk/api',
+  baseUrl: 'https://tfastfood.tk/api',
   prepareHeaders: async headers => {
     const token = await AsyncStorage.getItem('accessToken');
-    console.log(token);
+    console.log('🚀 ~ file: baseQuery.js:8 ~ token', token);
+
     headers.set('Accept', 'application/json');
     headers.set('Content-Type', 'application/json');
     if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
+      headers.set('Authorization', `Bearer ${JSON.parse(token)}`);
     }
     return headers;
   },

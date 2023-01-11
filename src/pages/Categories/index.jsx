@@ -1,5 +1,5 @@
-import React, {useCallback} from 'react';
-import { SelectList } from 'react-native-dropdown-select-list'
+import React, {useCallback, useMemo} from 'react';
+import {SelectList} from 'react-native-dropdown-select-list';
 import ComboBox from 'react-native-combobox'; /*npm i react-native-combobox*/
 import {
   Image,
@@ -15,22 +15,36 @@ import {
   Alert,
   Button,
 } from 'react-native';
+import Constant from 'src/controller/Constant';
+import {useGetCategoryQuery, useGetProductQuery} from 'src/services/ProductAPI';
 
 const Categories = () => {
-    const [selected, setSelected] = React.useState("");
-  
-  const data = [
-      {key:'1', value:'Mobiles', disabled:true},
-      {key:'2', value:'Appliances'},
-      {key:'3', value:'Cameras'},
-      {key:'4', value:'Computers', disabled:true},
-      {key:'5', value:'Vegetables'},
-      {key:'6', value:'Diary Products'},
-      {key:'7', value:'Drinks'},
-  ]
-  const [selectedValue, setSelectedValue] = React.useState('option 1');
+  const [selected, setSelected] = React.useState('');
+  console.log(selected);
+  const {data: products, isLoading: isLoadingProduct} = useGetProductQuery(
+    {},
+    {refetchOnMountOrArgChange: true},
+  );
 
-  const values = ['option 1', 'option 2', 'option 3', 'option 4', 'option 5'];
+  const {data: category, isLoading: isLoadingCategory} = useGetCategoryQuery(
+    {},
+    {refetchOnMountOrArgChange: true},
+  );
+  console.log('🚀 ~ file: index.jsx:25 ~ Index ~ products', products);
+
+  console.log('🚀 ~ file: index.jsx:31 ~ Index ~ category', category);
+  const categoryData = useMemo(() => {
+    return category?.categorys?.map(item => ({
+      id: item.slug,
+      value: item.slug,
+    }));
+  }, [category]);
+
+  const productData = useMemo(() => {
+    return products?.product?.filter(item => item?.category?.slug === selected);
+  }, [products, selected]);
+
+  console.log(productData);
 
   return (
     <View style={styles.container}>
@@ -54,19 +68,62 @@ const Categories = () => {
       </View>
       <View style={[styles.Main, {flexDirection: 'row'}]}>
         <View style={[styles.text1]}>
-          <Text style={styles.tyett}>Short by:</Text>
+          <Text style={styles.tyett}>Category:</Text>
         </View>
         <View style={styles.ComboBox}>
-          {/* <ComboBox values={values} onValueSelect={setSelectedValue} /> */}
-          <SelectList 
-        setSelected={(val) => setSelected(val)} 
-        data={data} 
-        save="value"
-         />
+          <SelectList
+            setSelected={val => setSelected(val)}
+            data={categoryData}
+            save="value"
+            dropdownStyles={{
+              backgroundColor: Constant.color.white,
+              width: 150,
+            }}
+            boxStyles={{width: 150, marginTop: 4}}
+          />
         </View>
       </View>
       <ScrollView style={styles.ScrollView}>
-        <View style={styles.ListMon}>
+        {productData?.map(item => (
+          <View style={styles.ListMon} key={item.id}>
+            <TouchableOpacity style={styles.buttonMon}>
+              <View
+                style={{
+                  backgroundColor: Constant.color.main,
+                  paddingHorizontal: 70,
+                  borderRadius: 20,
+                }}>
+                <Image
+                  style={[styles.FaceLogoMon]}
+                  source={{uri: `${Constant.REACT_APP_API_URL}${item.img01}`}}
+                />
+              </View>
+            </TouchableOpacity>
+            <View style={styles.IconYT}>
+              <TouchableOpacity style={styles.buttonYT}>
+                <Image source={require('../../assets/Icons/love.png')} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={[styles.textgia]}>
+              <Text style={styles.gia}>{item.selling_price}</Text>
+            </View>
+            <View style={[styles.textsao]}>
+              <Text style={styles.sao}>5 </Text>
+              <Image
+                style={styles.sao}
+                source={require('../../assets/Icons/star.png')}
+              />
+            </View>
+            <View style={[styles.Tenmon]}>
+              <Text style={styles.namemon}>{item.name}</Text>
+            </View>
+            <View style={[styles.PL]}>
+              <Text style={styles.phuluc}>Chicken, Cheese and pineapple</Text>
+            </View>
+          </View>
+        ))}
+        {/* <View style={styles.ListMon}>
           <TouchableOpacity style={styles.buttonMon}>
             <Image
               style={[styles.FaceLogoMon]}
@@ -188,16 +245,19 @@ const Categories = () => {
           <View style={[styles.PL]}>
             <Text style={styles.phuluc}>Chicken, Cheese and pineapple</Text>
           </View>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    backgroundColor: Constant.color.white,
+  },
   ScrollView: {
     position: 'relative',
+    marginBottom: 200,
   },
   Main: {
     marginTop: 30,
@@ -250,7 +310,8 @@ const styles = StyleSheet.create({
     Color: '#FE724C',
     height: 100,
     marginLeft: 15,
-    marginTop: 5
+    marginTop: 5,
+    zIndex: 100,
   },
 
   namemon: {

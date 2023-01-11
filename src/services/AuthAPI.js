@@ -8,9 +8,6 @@ export const AuthAPI = createApi({
     getUser: builder.query({
       query: params => ({
         url: '/users',
-        headers: {
-          Authorization: `Bearer ${params.token}`,
-        },
       }),
     }),
     updateUser: builder.mutation({

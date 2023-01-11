@@ -66,8 +66,7 @@ function Login({navigation}) {
 
   const dispatch = useDispatch();
   const {isLoading, userInfo, accessToken} = useSelector(state => state.auth);
-  console.log('🚀 ~ file: index.jsx:20 ~ Index ~ userInfo', userInfo);
-  console.log('🚀 ~ file: index.jsx:9 ~ Index ~ isLoading', isLoading);
+
   const {
     control,
     handleSubmit,
@@ -89,11 +88,13 @@ function Login({navigation}) {
             accessToken: resToken.token,
           };
           dispatch(login(payload));
-          getUsers({token: resToken.token})
+
+          getUsers()
             .unwrap()
             .then(resUser => {
+              console.log(resUser);
               const payload = {
-                userInfo: resUser.userInfo,
+                userInfo: resUser.user,
               };
 
               dispatch(updateInfoUser(payload));

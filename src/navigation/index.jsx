@@ -8,35 +8,44 @@ import {useLazyGetUserQuery} from 'src/services/AuthAPI';
 import AppStack from './AppStack';
 import AuthStack from './AuthStack';
 const Index = () => {
-  const [getUsers] = useLazyGetUserQuery();
+  // const [getUsers, data] = useLazyGetUserQuery();
+  // console.log('🚀 ~ file: index.jsx:12 ~ Index ~ data', data);
 
   const {isLoading, userInfo, accessToken} = useSelector(state => state.auth);
   console.log('🚀 ~ file: index.jsx:ấ9 ~ Index ~ userInfo', userInfo);
-  console.log('🚀 ~ file: index.jsx:9 ~ Index ~ isLoading', isLoading);
+  // console.log('🚀 ~ file: index.jsx:9 ~ Index ~ isLoading', isLoading);
   console.log('🚀 ~ file: index.jsx:9 ~ Index ~ isLoading', accessToken);
-  // const token = await AsyncStorage.getItem('accessToken');
+  // const token = AsyncStorage.getItem('accessToken');
   // console.log('🚀 ~ file: index.jsx:14 ~ Index ~ token', token);
   // useEffect(() => {
-  //   getUsers({})
-  //     .unwrap()
-  //     .then(resUser => {
-  //       console.log('🚀 ~ file: index.jsx:98 ~ onSubmit ~ resUser', resUser);
+  //   if (accessToken) {
+  //     console.log(
+  //       '🚀 ~ file: index.jsx:21 ~ useEffect ~ accessToken',
+  //       accessToken,
+  //     );
 
-  //       const payload = {
-  //         userInfo: resUser.userInfo,
-  //       };
+  //     getUsers()
+  //       .unwrap()
+  //       .then(resUser => {
+  //         console.log('🚀 ~ file: index.jsx:30 ~ useEffect ~ resUser', resUser);
+  //         // console.log('resUser', resUser);
 
-  //       dispatch(updateInfoUser(payload));
-  //     })
-  //     .catch(error => {
-  //       console.log(error);
-  //     });
+  //         const payload = {
+  //           userInfo: resUser.userInfo,
+  //         };
+
+  //         dispatch(updateInfoUser(payload));
+  //       })
+  //       .catch(error => {
+  //         console.log(error);
+  //       });
+  //   }
   // }, [accessToken]);
 
   return (
     <NavigationContainer>
-      {/* {accessToken ? <AppStack /> : <AuthStack />} */}
-      <AuthStack />
+      {accessToken && userInfo ? <AppStack /> : <AuthStack />}
+      {/* <AuthStack /> */}
       {/* <AppStack /> */}
     </NavigationContainer>
   );
