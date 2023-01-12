@@ -7,30 +7,115 @@ import Home from 'src/pages/Home';
 import Contacts from 'src/pages/Contacts';
 import Login from 'src/pages/Login';
 import Register from 'src/pages/Register';
-import Cart from 'src/pages/Cart';
-import Order from 'src/pages/Order';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import CustomDrawer from 'src/components/CustomDrawer';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Constant from 'src/controller/Constant';
+import Details from 'src/pages/Details';
+import Address from 'src/pages/Address';
+import Profile from 'src/pages/Profile';
+import Favorite from 'src/pages/Favorite';
+import ProductsList from 'src/pages/ProductsList';
+import Categories from 'src/pages/Categories';
 
-// const navigatorList = [
-//   {
-//     path: SITE_MAP.INDEX.path,
-//     Component: Home,
-//   },
-//   {
-//     path: SITE_MAP.CONTACT.path,
-//     Component: Contacts,
-//   },
-// ];
-const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 const AppStack = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name={SITE_MAP.CART} component={Cart} />
-      <Stack.Screen name={SITE_MAP.ORDER} component={Order} />
-      <Stack.Screen name={SITE_MAP.INDEX.name} component={Home} />
-      <Stack.Screen name={SITE_MAP.CONTACT.name} component={Contacts} />
-      <Stack.Screen name={SITE_MAP.LOGIN} component={Login} />
-      <Stack.Screen name={SITE_MAP.REGISTER} component={Register} />
-    </Stack.Navigator>
+    <Drawer.Navigator
+      drawerContent={props => <CustomDrawer {...props} />}
+      screenOptions={{
+        headerShown: false,
+        drawerActiveBackgroundColor: Constant.color.main,
+        drawerActiveTintColor: Constant.color.white,
+        drawerInactiveTintColor: Constant.color.gray,
+        drawerLabelStyle: {
+          marginLeft: -25,
+          fontFamily: 'Roboto-Medium',
+          fontSize: 15,
+        },
+      }}>
+      <Drawer.Screen
+        name={SITE_MAP.INDEX.name}
+        component={Home}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name={SITE_MAP.CONTACT.name}
+        component={Contacts}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name={SITE_MAP.LOGIN}
+        component={Login}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name={SITE_MAP.REGISTER}
+        component={Register}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name={SITE_MAP.DETAILS}
+        component={Details}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name={SITE_MAP.ADDRESS}
+        component={Address}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name={SITE_MAP.PROFILE}
+        component={Profile}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name={SITE_MAP.FAVORITE}
+        component={Favorite}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name={SITE_MAP.PRODUCT_LIST}
+        component={Categories}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+    </Drawer.Navigator>
   );
 };
 export default AppStack;

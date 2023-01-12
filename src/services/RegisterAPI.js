@@ -3,7 +3,7 @@ import {baseQueryWithoutToken} from './baseQuery';
 
 export const RegisterAPI = createApi({
   baseQuery: baseQueryWithoutToken,
-  reducerPath: 'Register',
+  reducerPath: 'RegisterAPI',
   endpoints: builder => ({
     registerAccount: builder.mutation({
       query: body => ({
