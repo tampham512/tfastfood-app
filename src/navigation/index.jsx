@@ -12,13 +12,8 @@ const Index = () => {
   // console.log('🚀 ~ file: index.jsx:12 ~ Index ~ data', data);
 
   const {isLoading, userInfo, accessToken} = useSelector(state => state.auth);
-<<<<<<< HEAD
   console.log('🚀 ~ file: index.jsx:9 ~ Index ~ userInfo', userInfo);
-  console.log('🚀 ~ file: index.jsx:9 ~ Index ~ isLoading', isLoading);
-=======
-  console.log('🚀 ~ file: index.jsx:ấ9 ~ Index ~ userInfo', userInfo);
   // console.log('🚀 ~ file: index.jsx:9 ~ Index ~ isLoading', isLoading);
->>>>>>> 72bd97838d27cbfd279690297b7a9de4ef0349ba
   console.log('🚀 ~ file: index.jsx:9 ~ Index ~ isLoading', accessToken);
   // const token = AsyncStorage.getItem('accessToken');
   // console.log('🚀 ~ file: index.jsx:14 ~ Index ~ token', token);

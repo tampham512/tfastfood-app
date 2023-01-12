@@ -312,12 +312,9 @@ def isNewArchitectureEnabled() {
     return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
 }
 
-<<<<<<< HEAD
 // project.ext.vectoricons = [
 //     iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf' ] // Name of the font files you want to copy
 // ]
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
-=======
-apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
->>>>>>> 72bd97838d27cbfd279690297b7a9de4ef0349ba
+
