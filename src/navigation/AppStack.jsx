@@ -7,6 +7,8 @@ import Home from 'src/pages/Home';
 import Contacts from 'src/pages/Contacts';
 import Login from 'src/pages/Login';
 import Register from 'src/pages/Register';
+import Cart from 'src/pages/Cart';
+import Order from 'src/pages/Order';
 
 // const navigatorList = [
 //   {
@@ -22,6 +24,8 @@ const Stack = createNativeStackNavigator();
 const AppStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name={SITE_MAP.CART} component={Cart} />
+      <Stack.Screen name={SITE_MAP.ORDER} component={Order} />
       <Stack.Screen name={SITE_MAP.INDEX.name} component={Home} />
       <Stack.Screen name={SITE_MAP.CONTACT.name} component={Contacts} />
       <Stack.Screen name={SITE_MAP.LOGIN} component={Login} />

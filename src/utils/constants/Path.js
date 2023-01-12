@@ -13,4 +13,6 @@ export const SITE_MAP = {
   },
   LOGIN: 'login',
   REGISTER: 'register',
+  CART: 'cart',
+  ORDER: 'order',
 };

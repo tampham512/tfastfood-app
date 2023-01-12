@@ -7,7 +7,7 @@ import MyCard from 'src/components/Contacts/MyCard';
 
 import {H1} from 'src/components/Heading/Heading';
 
-function index() {
+function Index() {
   return (
     <Navigation>
       <View style={{flex: 1}}>
@@ -21,4 +21,4 @@ function index() {
   );
 }
 
-export default index;
+export default Index;
