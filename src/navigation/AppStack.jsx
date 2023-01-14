@@ -38,7 +38,7 @@ const AppStack = () => {
         },
       }}>
       <Drawer.Screen
-        name={SITE_MAP.INDEX.name}
+        name={SITE_MAP.INDEX}
         component={Home}
         options={{
           drawerIcon: ({color}) => (
@@ -47,7 +47,7 @@ const AppStack = () => {
         }}
       />
       <Drawer.Screen
-        name={SITE_MAP.CONTACT.name}
+        name={SITE_MAP.CONTACT}
         component={Contacts}
         options={{
           drawerIcon: ({color}) => (

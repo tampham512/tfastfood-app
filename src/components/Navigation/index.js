@@ -13,31 +13,28 @@ function Navigation({children}) {
     {
       title: 'Home',
       icon: '',
-      menu: SITE_MAP.INDEX.menu,
-      name: SITE_MAP.INDEX.name,
+
+      name: SITE_MAP.INDEX,
     },
     {
       title: 'Order',
       icon: '',
-      menu: SITE_MAP.CONTACT.menu,
-      name: SITE_MAP.CONTACT.name,
+
+      name: SITE_MAP.CONTACT,
     },
     {
       title: 'Product',
       icon: '',
-      menu: SITE_MAP.PRODUCT.name,
-      name: SITE_MAP.PRODUCT.menu,
+      name: SITE_MAP.PRODUCT,
     },
     {
       title: 'Chat',
       icon: '',
-      menu: SITE_MAP.INDEX.name,
-      name: SITE_MAP.INDEX.name,
+      name: SITE_MAP.INDEX,
     },
     {
       title: 'Account',
       icon: '',
-      menu: '',
       name: SITE_MAP.LOGIN,
     },
   ];
@@ -50,7 +47,7 @@ function Navigation({children}) {
       <ScrollView style={{flex: 1}}>{children}</ScrollView>
 
       <View style={styles.container}>
-        {menuList.map(({title, icon, menu, name}, index) => (
+        {menuList.map(({title, icon, name}, index) => (
           <View
             style={styles.item}
             onStartShouldSetResponder={onPressItem(name)}
