@@ -1,3 +1,5 @@
+import {useNavigation, useRoute} from '@react-navigation/core';
+import {ScrollView} from 'native-base';
 import {useState} from 'react';
 import {
   Image,
@@ -9,13 +11,44 @@ import {
   View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Constant from 'src/controller/Constant';
+import {useReviewProductMutation} from 'src/services/OrderAPI';
+import {useGetDetailProductQuery} from 'src/services/ProductAPI';
+import {SITE_MAP} from 'src/utils/constants/Path';
+const starImgFilled =
+  'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
+const starImgCorner =
+  'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
 function Index() {
-  const [defaultRating, setdefaultRating] = useState(2);
-  const [maxRating, setmaxRating] = useState([1, 2, 3, 4, 5]);
-  const starImgFilled =
-    'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
-  const starImgCorner =
-    'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
+  const [defaultRating, setdefaultRating] = useState(5);
+  const [reviewText, setReviewText] = useState('');
+  const [maxRating] = useState([1, 2, 3, 4, 5]);
+  const route = useRoute();
+  const {
+    data: productDetail,
+    isError,
+    isFetching,
+  } = useGetDetailProductQuery(
+    {slug: route?.params?.slug},
+    {refetchOnMountOrArgChange: true, skip: !route?.params?.slug},
+  );
+  const [review] = useReviewProductMutation();
+  const {navigate} = useNavigation();
+
+  const handleSubmit = () => {
+    const data = {
+      content: reviewText || '',
+      id_product: productDetail?.product?.id,
+      rate_star: defaultRating || 5,
+    };
+    review(data)
+      .unwrap()
+      .then(res => {
+        console.log('ok');
+        navigate(SITE_MAP.ORDER);
+      });
+  };
+
   const CustomRatingBar = () => {
     return (
       <View style={styles.customRatingBarStyle}>
@@ -41,12 +74,13 @@ function Index() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={{position: 'relative'}}>
         <TouchableOpacity>
           <Image
             style={{height: 140, width: '100%', borderRadius: 10}}
-            source={require('../../assets/Icons/banner.png')}></Image>
+            source={require('../../assets/Icons/banner.png')}
+          />
         </TouchableOpacity>
       </View>
       <View
@@ -57,13 +91,17 @@ function Index() {
           zIndex: 7,
         }}>
         <Image
-          source={require('../../assets/Icons/Hut.jpg')}
+          source={{
+            uri: `${Constant.REACT_APP_API_URL}${productDetail?.product?.img01}`,
+          }}
           style={{
             height: 108,
             width: 108,
             borderRadius: 100,
             backgroundColor: '#FFC529',
-          }}></Image>
+            resizeMode: 'contain',
+          }}
+        />
       </View>
       <View
         style={{
@@ -74,38 +112,9 @@ function Index() {
           height: 130,
           width: 130,
           borderRadius: 100,
-          backgroundColor: '#ffffff',
+          backgroundColor: Constant.color.main,
         }}></View>
-      <View
-        style={{
-          position: 'absolute',
-          top: 170,
-          left: 210,
-          zIndex: 9,
-          height: 30,
-          width: 30,
-          borderRadius: 100,
-          backgroundColor: '#029094',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <Ionicons name="checkmark-outline" size={25} color={'white'} />
-      </View>
-      <View
-        style={{
-          position: 'absolute',
-          top: 165,
-          left: 205,
-          zIndex: 7,
-          height: 45,
-          width: 45,
-          borderRadius: 100,
-          backgroundColor: '#ffffff',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <Ionicons name="checkmark-outline" size={25} color={'white'} />
-      </View>
+
       <View
         style={{
           position: 'absolute',
@@ -125,7 +134,7 @@ function Index() {
         style={{
           alignItems: 'center',
           justifyContent: 'center',
-          top: 60,
+          top: 70,
         }}>
         <Text
           style={{
@@ -134,31 +143,18 @@ function Index() {
             fontFamily: 'Sofia Pro',
             color: '#000000',
           }}>
-          Pizza Hut
+          {productDetail?.product?.name}
         </Text>
       </View>
+
       <View
         style={{
           alignItems: 'center',
-          top: 60,
+          top: 70,
         }}>
         <Text
           style={{
-            fontSize: 12,
-            fontFamily: 'Sofia Pro',
-            color: '#9796A1',
-          }}>
-          4102 Pretty View Lanenda?
-        </Text>
-      </View>
-      <View
-        style={{
-          alignItems: 'center',
-          top: 67,
-        }}>
-        <Text
-          style={{
-            fontSize: 12,
+            fontSize: 14,
             fontFamily: 'Sofia Pro',
             color: '#53D776',
           }}>
@@ -186,13 +182,14 @@ function Index() {
       <CustomRatingBar />
       <TextInput
         onChangeText={text => {
-          console.log(text);
+          setReviewText(text);
         }}
+        value={reviewText}
         placeholder="Write review"
         style={{
           borderWidth: 1,
           borderColor: '#959589',
-          width: 370,
+          width: 'auto',
           height: 160,
           fontSize: 16,
           top: 30,
@@ -200,21 +197,24 @@ function Index() {
           paddingBottom: 120,
           textcolor: '#959589',
           borderRadius: 10,
-        }}></TextInput>
+        }}
+      />
       <View
         style={{
           marginTop: 10,
           alignItems: 'center',
         }}>
         <TouchableOpacity
+          onPress={handleSubmit}
           style={{
             height: 60,
             width: 248,
-            marginTop: 90,
+            marginTop: 60,
             borderRadius: 30,
             backgroundColor: '#FE724C',
             alignItems: 'center',
             justifyContent: 'center',
+            marginBottom: 20,
           }}>
           <Text
             style={{
@@ -226,7 +226,7 @@ function Index() {
           </Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({

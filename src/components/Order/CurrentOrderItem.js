@@ -1,60 +1,132 @@
+import {useNavigation} from '@react-navigation/core';
 import {Center, ScrollView} from 'native-base';
 import React from 'react';
 import {View, TouchableOpacity, Text, Image, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Constant from 'src/controller/Constant';
-import Utils from 'src/utils/utils';
+import {useUpdateBillMutation} from 'src/services/OrderAPI';
+import {SITE_MAP} from 'src/utils/constants/Path';
+import Utils, {numberWithCommasTotal, numberWithCommas} from 'src/utils/utils';
+const STATUS_ORDER = {
+  0: 'Waiting for confirmation',
+  1: 'Delivery',
+  2: 'Delivered',
+  3: 'Cancelled',
+};
 
-const CurrentOrderItem = ({current_order_item}) => {
+const CurrentOrderItem = ({current_order_item, handleRefetch}) => {
   current_order_item = current_order_item.item;
-  // console.log(current_order_item);
+
+  const [updateStatus] = useUpdateBillMutation();
+  const {navigate} = useNavigation();
+  const handleCancelOrder = () => {
+    const data = {
+      id_bill: current_order_item.id,
+      status: 3,
+    };
+
+    updateStatus(data).then(() => {
+      handleRefetch();
+    });
+  };
+  const handleReview = slug => () => {
+    // console.log('handleReview');
+    navigate(SITE_MAP.RATINGSERVICE, {
+      slug,
+    });
+  };
+  const gotoProduct = slug => () => {
+    // console.log('handleReview');
+    navigate(SITE_MAP.DETAILS, {
+      slug,
+    });
+  };
   return (
     <View style={styles.current_order_item}>
       <View style={styles.current_order_item_container}>
         <View style={styles.current_item_info}>
-          <Image style={styles.item_image} source={current_order_item?.image} />
-          <View style={styles.item_info_container}>
-            <Text style={styles.item_quantity}>
-              {current_order_item?.total_item + ' items'}
-            </Text>
-            <View style={styles.item_title_container}>
-              <Text style={styles.item_title}>{current_order_item?.title}</Text>
-              <Icon
-                name="checkmark-circle"
-                size={14}
-                color={Constant.color.green_tick}></Icon>
+          <Text>{Utils.format_date_time(current_order_item?.created_at)}</Text>
+          <Text style={styles.order_id}>#HD0{current_order_item.id}</Text>
+        </View>
+        {current_order_item?.bill_detail?.map(item => (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 15,
+            }}>
+            <View>
+              <View style={styles.item_title_container}>
+                <Image
+                  style={styles.item_image}
+                  source={{
+                    uri: `${Constant.REACT_APP_API_URL}${item?.product?.img01}`,
+                  }}
+                />
+                <TouchableOpacity onPress={gotoProduct(item?.product?.slug)}>
+                  <Text style={styles.item_title}>{item?.product?.name}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.item_info_container}>
+              <Text style={styles.item_quantity}>x{item?.quantity}</Text>
+              <Text style={styles.item_quantity}>
+                {numberWithCommasTotal(item?.total_price)}
+              </Text>
+              {current_order_item?.status == 2 && (
+                <TouchableOpacity
+                  style={styles.order_review}
+                  onPress={handleReview(item?.product?.slug)}>
+                  <Text style={styles.text_order_btn}>Review</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
-          <Text style={styles.order_id}>#264100</Text>
-        </View>
+        ))}
+
         <View style={styles.current_time_delivery}>
           <View style={styles.current_item_time}>
-            <Text style={styles.arrive_time_title}>Estimated Arrival</Text>
+            <Text style={styles.arrive_time_title}>Total Price</Text>
             <View style={styles.current_time_container}>
-              <Text style={styles.arrive_time}>{Math.ceil(Utils.difference_current_date_and_other_date(current_order_item?.time))}</Text>
-              <Text style={styles.avatar_time_unit}>mins</Text>
+              {/* <Text style={styles.arrive_time}>
+                {Math.ceil(
+                  Utils.difference_current_date_and_other_date(
+                    current_order_item?.time,
+                  ),
+                )}
+              </Text>
+              <Text style={styles.avatar_time_unit}>mins</Text> */}
+              <Text style={styles.delivery_status}>
+                {numberWithCommas(current_order_item?.total_price)}
+              </Text>
             </View>
           </View>
           <View style={styles.current_item_delivery}>
             <Text style={styles.delivery}>Now</Text>
             <Text style={styles.delivery_status}>
-              {current_order_item?.status}
+              {STATUS_ORDER?.[current_order_item?.status]}
             </Text>
           </View>
         </View>
-        <View style={styles.all_btn_container}>
-          <View style={styles.btn_container}>
-            <TouchableOpacity style={styles.cancel_btn}>
-              <Text style={styles.text_cancel_btn}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
 
-          <View style={styles.btn_container}>
+        {current_order_item?.status == 0 && (
+          <View style={styles.all_btn_container}>
+            <View style={styles.btn_container}>
+              <TouchableOpacity
+                style={styles.order_btn}
+                onPress={handleCancelOrder}>
+                <Text style={styles.text_order_btn}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {/* <View style={styles.btn_container}>
             <TouchableOpacity style={styles.order_btn}>
               <Text style={styles.text_order_btn}>Track Order</Text>
             </TouchableOpacity>
-          </View>
-        </View>
+          </View> */}
       </View>
     </View>
   );
@@ -91,21 +163,24 @@ const styles = StyleSheet.create({
   },
 
   item_image: {
-    width: '20%',
+    width: 60,
     aspectRatio: 1,
     borderRadius: 10,
     resizeMode: 'cover',
     backgroundColor: Constant.color.dropShadow,
+    marginRight: 10,
     // elevation: 5,
     // translationZ: 20,
   },
 
   item_info_container: {
     marginLeft: Constant.screen.width * 0.04,
-    marginTop: Constant.screen.width * 0.03,
+    // marginTop: Constant.screen.width * 0.03,
+    textAlign: 'right',
     // backgroundColor: 'yellow',
   },
   item_quantity: {
+    textAlign: 'right',
     color: Constant.color.grey,
     fontSize: Constant.screen.width * 0.048 * 0.7,
   },
@@ -115,13 +190,15 @@ const styles = StyleSheet.create({
     marginTop: Constant.screen.width * 0.01,
     marginBottom: Constant.screen.width * 0.01,
     // backgroundColor: 'red',
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   item_title: {
     fontSize: Constant.screen.width * 0.048 * 0.8,
     color: Constant.color.black,
     fontWeight: 'bold',
     marginRight: Constant.screen.width * 0.01,
+    // marginTop: 5,
+    width: 160,
   },
   order_id: {
     color: Constant.color.main,
@@ -187,7 +264,8 @@ const styles = StyleSheet.create({
     height: Constant.screen.width * 0.11,
     marginTop: Constant.screen.width * 0.06,
     flexDirection: 'row',
-    // justifyContent: 'center',
+    justifyContent: 'flex-end',
+
     // backgroundColor: 'red',
   },
 
@@ -220,6 +298,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  order_review: {
+    backgroundColor: Constant.color.main,
+    width: 60,
+    height: 25,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   text_order_btn: {
     color: Constant.color.background,
     fontSize: Constant.screen.width * 0.048 * 0.7,

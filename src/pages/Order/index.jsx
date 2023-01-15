@@ -1,6 +1,6 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Center, InputRightAddon} from 'native-base';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -23,184 +23,45 @@ import History from 'src/components/Order/History';
 import Utils from 'src/utils/utils';
 import CurrentOrderItem from 'src/components/Order/CurrentOrderItem';
 import LastedOrderItem from 'src/components/Order/LastedOrderItem';
-const Tab = createMaterialTopTabNavigator();
+import {useGetBillUserQuery} from 'src/services/OrderAPI';
+import {ButtonBack} from 'src/components/Button/ButtonBack';
+import {SITE_MAP} from 'src/utils/constants/Path';
 
-function MyTabs() {
+const getDataByStatus = (statusList, arr) => {
   return (
-    <Tab.Navigator
-      initialRouteName="UpComing"
-      tabBarOptions={{
-        activeTintColor: '#e91e63',
-        labelStyle: {fontSize: 12},
-        style: {backgroundColor: 'white'},
-      }}>
-      <Tab.Screen
-        name="UpComing"
-        component={UpComing}
-        options={{tabBarLabel: 'UpComing'}}
-      />
-      <Tab.Screen
-        name="History"
-        component={History}
-        options={{tabBarLabel: 'History'}}
-      />
-    </Tab.Navigator>
+    arr
+      ?.filter(item => statusList?.includes(item.status))
+      ?.sort((a, b) => Number(b.id) - Number(a.id)) || []
   );
-}
-
-const current_order_list = [
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-12 00:10',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Food on the way',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-12 00:10',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Food on the way',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-12 00:10',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Food on the way',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-12 00:10',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Food on the way',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-12 00:10',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Food on the way',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-12 00:10',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Food on the way',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-12 00:10',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Food on the way',
-  },
-];
-
-const lasted_order_list = [
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-11 10:30',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Order Delivered',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-11 10:30',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Order Delivered',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-11 10:30',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Order Delivered',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-11 10:30',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Order Delivered',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-11 10:30',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Order Delivered',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-11 10:30',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Order Delivered',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-11 10:30',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Order Delivered',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-11 10:30',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Order Delivered',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-11 10:30',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Order Delivered',
-  },
-  {
-    title: 'Red n hot pizza',
-    time: '2023-01-11 10:30',
-    price: 30000,
-    image: Constant.images.pizza,
-    total_item: 1,
-    status: 'Order Delivered',
-  },
-];
+};
 
 const Order = () => {
   const [active, setActive] = React.useState(1);
+
+  const {data: OrderHistory, refetch} = useGetBillUserQuery(
+    {},
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  const listOrderHistory = useMemo(() => {
+    if (OrderHistory?.billsUser)
+      switch (active) {
+        case 1:
+          return getDataByStatus([0, 1], OrderHistory?.billsUser);
+        case 2:
+          return getDataByStatus([2], OrderHistory?.billsUser);
+        case 3:
+          return getDataByStatus([3], OrderHistory?.billsUser);
+        default:
+          return OrderHistory?.billsUser;
+      }
+  }, [OrderHistory, active]);
   return (
     <View style={styles.container}>
+      <ButtonBack pathBack={SITE_MAP.INDEX} />
       <View style={styles.header}>
-        <TouchableOpacity style={styles.back_btn}>
-          <Icon
-            name="chevron-back-sharp"
-            size={24}
-            color={Constant.color.black}></Icon>
-        </TouchableOpacity>
         <View>
           <Text style={styles.title_header}>My Orders</Text>
         </View>
@@ -209,25 +70,6 @@ const Order = () => {
         </TouchableOpacity>
       </View>
 
-      {/* <Tab.Navigator
-    initialRouteName="UpComing"
-    tabBarOptions={{
-      activeTintColor: '#e91e63',
-      labelStyle: {fontSize: 12},
-      style: {backgroundColor: 'white'},
-    }}>
-    <Tab.Screen
-      name="UpComing"
-      component={UpComing}
-      options={{tabBarLabel: 'UpComing'}}
-    />
-    <Tab.Screen
-      name="History"
-      component={History}
-      options={{tabBarLabel: 'History'}}
-    />
-  </Tab.Navigator> */}
-
       <View style={styles.content_container}>
         <View style={styles.tab_container}>
           <TouchableOpacity
@@ -235,13 +77,14 @@ const Order = () => {
             style={{
               backgroundColor:
                 active == 1 ? Constant.color.main : Constant.color.background,
-              width: '47.5%',
+              width: '33%',
               height: '82%',
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: Constant.screen.width,
-              position: 'absolute',
-              left: (Constant.screen.width * 0.88 * 1) / 60,
+
+              // position: 'absolute',
+              // left: (Constant.screen.width * 0.88 * 1) / 60,
             }}>
             <Text
               style={{
@@ -257,13 +100,13 @@ const Order = () => {
             style={{
               backgroundColor:
                 active == 2 ? Constant.color.main : Constant.color.background,
-              width: '47.5%',
+              width: '33%',
               height: '82%',
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: Constant.screen.width,
-              position: 'absolute',
-              right: (Constant.screen.width * 0.88 * 1) / 60,
+              // position: 'absolute',
+              // right: (Constant.screen.width * 0.88 * 1) / 60,
             }}>
             <Text
               style={{
@@ -274,24 +117,50 @@ const Order = () => {
               History
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setActive(3)}
+            style={{
+              backgroundColor:
+                active == 3 ? Constant.color.main : Constant.color.background,
+              width: '33%',
+              height: '82%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 20,
+              // position: 'absolute',
+              // right: (Constant.screen.width * 0.88 * 1) / 60,
+            }}>
+            <Text
+              style={{
+                color:
+                  active == 3 ? Constant.color.background : Constant.color.main,
+                fontSize: Constant.screen.width * 0.048 * 0.7,
+              }}>
+              Cancelled
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        <ScrollView style={{
-          // backgroundColor: 'red',
-          height: '76%',
-        }}>
+        <ScrollView
+          style={{
+            // backgroundColor: 'red',
+            height: '76%',
+          }}>
           <View style={styles.list_container}>
             <View style={styles.current_order_list}>
               <FlatList
                 style={styles.flat_list_item}
-                data={current_order_list}
+                data={listOrderHistory}
                 renderItem={(item, index) => (
-                  <CurrentOrderItem current_order_item={item} />
+                  <CurrentOrderItem
+                    current_order_item={item}
+                    handleRefetch={refetch}
+                  />
                 )}
               />
             </View>
 
-            <Text style={styles.lasted_order_title}>Lasted Orders</Text>
+            {/* <Text style={styles.lasted_order_title}>Lasted Orders</Text>
 
             <View style={styles.lasted_order_list}>
               <FlatList
@@ -301,7 +170,7 @@ const Order = () => {
                   <LastedOrderItem lasted_order_item={item} />
                 )}
               />
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </View>
@@ -382,6 +251,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: Constant.color.background,
     position: 'relative',
+    paddingHorizontal: 15,
   },
   upcoming_tab_btn: {},
   history_tab_btn: {},
@@ -390,6 +260,7 @@ const styles = StyleSheet.create({
     height: '100%',
     // position: 'absolute',
     // top: Constant.screen.width * 0.08 + (Constant.screen.width * 0.88 * 1) / 6,
+    marginBottom: 40,
   },
 
   current_order_list: {

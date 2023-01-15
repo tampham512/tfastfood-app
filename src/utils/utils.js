@@ -44,3 +44,26 @@ export default class Util {
 }
 //   "${new Intl.NumberFormat('en', {}).format(priceInput).replace(/, /g, ',')}";
 //   "${new Intl.NumberFormat('en', {}).format(priceInput).replace(/, /g, ',')}";
+export const numberWithCommasTotal = num => {
+  const number = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  return number.concat('đ');
+};
+export const numberWithCommas = num => {
+  const number = num?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  const length = number?.toString().length;
+
+  const numberSlice = number?.slice(0, length - 3);
+
+  return numberSlice?.concat('đ');
+};
+export const starMedium = arr => {
+  if (arr) {
+    let newtotalStar =
+      arr?.reduce((total, item) => total + Number(item.rate_star), 0) /
+      arr?.length;
+    return newtotalStar || 0;
+  }
+  return 0;
+};

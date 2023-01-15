@@ -1,15 +1,24 @@
 import {createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const items = AsyncStorage.getItem('cartItems') || [];
+const items = async () => {
+  const res = await AsyncStorage.getItem('cartItems');
+
+  if (res) {
+    return JSON.parse(res);
+  }
+  return [];
+};
+
 const initialState = {
-  value: items,
+  value: items()?.cart || [],
 };
 export const cartSlice = createSlice({
-  name: 'cartItems',
+  name: 'cart',
   initialState,
   reducers: {
     addItems: (state, action) => {
+      console.log('v');
       const newItem = action.payload;
 
       const dublicate = findItem(state.value, newItem);
@@ -20,7 +29,7 @@ export const cartSlice = createSlice({
           ...state.value,
           {
             ...newItem,
-            id: dublicate[0].id,
+            id: dublicate[0]?.id,
             quantity: newItem.quantity + dublicate[0].quantity,
           },
         ];
@@ -37,7 +46,10 @@ export const cartSlice = createSlice({
         ];
       }
 
-      AsyncStorage.setItem('cartItems', JSON.stringify(sortItems(state.value)));
+      AsyncStorage.setItem(
+        'cartItems',
+        JSON.stringify({cart: sortItems(state.value)}),
+      );
     },
     updateItems: (state, action) => {
       const itemUpdate = action.payload;
@@ -50,32 +62,39 @@ export const cartSlice = createSlice({
           ...state.value,
           {
             ...itemUpdate,
-            id: item[0].id,
+            id: item[0]?.id,
           },
         ];
         AsyncStorage.setItem(
           'cartItems',
-          JSON.stringify(sortItems(state.value)),
+          JSON.stringify({cart: sortItems(state.value)}),
         );
       }
     },
     removeItem: (state, action) => {
       const itemDelete = action.payload;
       state.value = delItem(state.value, itemDelete);
-      AsyncStorage.setItem('cartItems', JSON.stringify(sortItems(state.value)));
+      AsyncStorage.setItem(
+        'cartItems',
+        JSON.stringify({cart: sortItems(state.value)}),
+      );
+    },
+    clear: (state, action) => {
+      state.value = [];
+      AsyncStorage.removeItem('cartItems');
     },
   },
 });
 const findItem = (arr, item) =>
-  arr.filter(e => e.slug === item.slug && e.idUser === item.idUser);
+  arr?.filter(e => e.slug === item.slug && e.idUser === item.idUser);
 
 const delItem = (arr, item) =>
-  arr.filter(e => e.slug !== item.slug || e.idUser !== item.idUser);
+  arr?.filter(e => e.slug !== item.slug || e.idUser !== item.idUser);
 
 const sortItems = arr =>
-  arr.sort((a, b) => {
+  arr?.sort((a, b) => {
     return a.id - b.id;
   });
 const {actions, reducer} = cartSlice;
-export const {addItems, updateItems, removeItem} = actions;
+export const {addItems, updateItems, removeItem, clear} = actions;
 export default reducer;

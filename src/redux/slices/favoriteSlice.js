@@ -1,12 +1,19 @@
 import {createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const items = AsyncStorage.getItem('favoriteItems') || [];
+const items = async () => {
+  const res = await AsyncStorage.getItem('favoriteItems');
+  if (res) {
+    return JSON.parse(res);
+  }
+  return [];
+};
+
 const initialState = {
-  value: items,
+  value: items()?.favorite || [],
 };
 export const favoriteSlice = createSlice({
-  name: 'favoriteItems',
+  name: 'favorite',
   initialState,
   reducers: {
     addItemsFavorite: (state, action) => {
@@ -14,17 +21,7 @@ export const favoriteSlice = createSlice({
 
       const dublicate = findItem(state.value, newItem);
 
-      if (dublicate.length > 0) {
-        // state.value = delItem(state.value, newItem);
-        // state.value = [
-        //   ...state.value,
-        //   {
-        //     ...newItem,
-        //     id: dublicate[0].id,
-        //     quantity: newItem.quantity + dublicate[0].quantity,
-        //   },
-        // ];
-      } else {
+      if (dublicate.length <= 0) {
         state.value = [
           ...state.value,
           {
@@ -39,7 +36,7 @@ export const favoriteSlice = createSlice({
 
       AsyncStorage.setItem(
         'favoriteItems',
-        JSON.stringify(sortItems(state.value)),
+        JSON.stringify({favorite: sortItems(state.value)}),
       );
     },
 
@@ -50,7 +47,7 @@ export const favoriteSlice = createSlice({
 
       AsyncStorage.setItem(
         'favoriteItems',
-        JSON.stringify(sortItems(state.value)),
+        JSON.stringify({favorite: sortItems(state.value)}),
       );
     },
   },

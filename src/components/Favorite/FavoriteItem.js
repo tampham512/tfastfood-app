@@ -1,100 +1,67 @@
-import {Center, ScrollView} from 'native-base';
-import React, {useEffect, useState} from 'react';
-import {View, TouchableOpacity, Text, Image, StyleSheet} from 'react-native';
-import {StackActions, useNavigation} from '@react-navigation/native';
+import React from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Constant from 'src/controller/Constant';
-import Utils from 'src/utils/utils';
 import {useDispatch} from 'react-redux';
-import {removeItem, updateItems} from 'src/redux/slices/cartSlice';
+import Constant from 'src/controller/Constant';
+import {removeItemFavorite} from 'src/redux/slices/favoriteSlice';
+import Utils from 'src/utils/utils';
 
-const CartItem = ({cart_item}) => {
-  cart_item = cart_item.item;
+const FavoriteItem = ({item}) => {
+  item = item.item;
 
-  const handleIncreaseItem = () => setQuantity(prevCount => prevCount + 1);
-  const handleDecreaseItem = () =>
-    setQuantity(prevCount => {
-      if (prevCount > 0) {
-        return prevCount - 1;
-      }
-      return prevCount;
-    });
   const dispatch = useDispatch();
 
-  const [quantity, setQuantity] = useState(cart_item.quantity);
-
-  // useEffect(() => {
-  //   setItem(props.item);
-  //   setQuantity(props.item.quantity);
-  // }, [props.item]);
-  useEffect(() => {
-    dispatch(
-      updateItems({
-        ...cart_item,
-        quantity: quantity,
-      }),
-    );
-  }, [quantity]);
-
-  const removeCartItem = () => {
-    dispatch(removeItem(cart_item));
+  const removeItem = () => {
+    dispatch(removeItemFavorite(item));
   };
   return (
     <View style={styles.cart_item}>
       <Image
         style={styles.item_image}
         source={{
-          uri: `${Constant.REACT_APP_API_URL}${cart_item?.product?.img01}`,
+          uri: `${Constant.REACT_APP_API_URL}${item?.product?.img01}`,
         }}
       />
       <View style={styles.item_info_container}>
         <View style={styles.item_info}>
-          <Text style={styles.item_title}>{cart_item?.product?.name}</Text>
-          {/* <Text style={styles.item_description}>
-            {cart_item?.product.description?.slice(20)}..
-          </Text> */}
+          <Text style={styles.item_title}>{item?.product?.name}</Text>
+
           <Text style={styles.item_price}>
-            {Utils.formatPrice(cart_item?.price, 'đ')}
+            {Utils.formatPrice(item?.price, 'đ')}
           </Text>
         </View>
         <View style={styles.item_action}>
-          <TouchableOpacity style={styles.delete_btn} onPress={removeCartItem}>
+          <TouchableOpacity style={styles.delete_btn} onPress={removeItem}>
             <Icon
               name="close-outline"
               size={24}
               color={Constant.color.main}></Icon>
           </TouchableOpacity>
-          <View style={styles.item_quantity_action}>
-            <TouchableOpacity onPress={handleDecreaseItem}>
-              <Icon
-                name="remove-circle-outline"
-                size={24}
-                color={Constant.color.main}></Icon>
-            </TouchableOpacity>
-            <View style={styles.item_quantity_container}>
-              <Text style={styles.item_quantity}>{quantity}</Text>
-            </View>
-            <TouchableOpacity onPress={handleIncreaseItem}>
-              <Icon
-                name="add-circle"
-                size={24}
-                color={Constant.color.main}></Icon>
-            </TouchableOpacity>
-          </View>
         </View>
       </View>
     </View>
   );
 };
 
-export default CartItem;
+export default FavoriteItem;
 
 const styles = StyleSheet.create({
   cart_item: {
-    width: Constant.screen.width * 0.88,
+    width: Constant.screen.width * 0.92,
     height: Constant.screen.width * 0.88 * 0.25,
     marginBottom: Constant.screen.width * 0.066,
     flexDirection: 'row',
+    borderRadius: 10,
+
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 38,
+    elevation: 5,
+    backgroundColor: 'white',
+    paddingRight: 10,
     // backgroundColor: '#ccc',
   },
   item_image: {

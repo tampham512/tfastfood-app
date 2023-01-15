@@ -1,38 +1,63 @@
-import React, {useCallback, useMemo} from 'react';
+import {useRoute} from '@react-navigation/core';
+import React, {useEffect, useMemo} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
-import ComboBox from 'react-native-combobox'; /*npm i react-native-combobox*/
-import {
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  ScrollView,
-  TextInput,
-  useState,
-  TouchableOpacity,
-  View,
-  radio_props,
-  Alert,
-  Button,
-} from 'react-native';
+import ProductItem from 'src/components/Product/ProductItem';
 import Constant from 'src/controller/Constant';
 import {useGetCategoryQuery, useGetProductQuery} from 'src/services/ProductAPI';
+import {CheckIcon, ScrollView, Select} from 'native-base';
+import {ButtonBack} from 'src/components/Button/ButtonBack';
+import {SITE_MAP} from 'src/utils/constants/Path';
+
+const typeSort = {
+  'NAME_A-Z': 'NAME_A-Z',
+  'NAME_Z-A': 'NAME_Z-A',
+  'PRICE_HIGH-LOW': 'PRICE_HIGH-LOW',
+  'PRICE_LOW-HIGH': 'PRICE_LOW-HIGH',
+};
+const optionSort = [
+  {
+    id: -1,
+    value: -1,
+    name: 'Choose option',
+  },
+  {
+    id: typeSort['NAME_A-Z'],
+    value: typeSort['NAME_A-Z'],
+    name: 'Name : A - Z',
+  },
+  {
+    id: typeSort['NAME_Z-A'],
+    value: typeSort['NAME_Z-A'],
+    name: 'Name : Z - A',
+  },
+  {
+    id: typeSort['PRICE_HIGH-LOW'],
+    value: typeSort['PRICE_HIGH-LOW'],
+    name: 'Price : High - Low ',
+  },
+  {
+    id: typeSort['PRICE_LOW-HIGH'],
+    value: typeSort['PRICE_LOW-HIGH'],
+    name: 'Price : Low - High ',
+  },
+];
 
 const Categories = () => {
-  const [selected, setSelected] = React.useState('');
-  console.log(selected);
+  const [selected, setSelected] = React.useState(-1);
+
   const {data: products, isLoading: isLoadingProduct} = useGetProductQuery(
     {},
     {refetchOnMountOrArgChange: true},
   );
 
+  const {params} = useRoute();
+
   const {data: category, isLoading: isLoadingCategory} = useGetCategoryQuery(
     {},
     {refetchOnMountOrArgChange: true},
   );
-  console.log('🚀 ~ file: index.jsx:25 ~ Index ~ products', products);
 
-  console.log('🚀 ~ file: index.jsx:31 ~ Index ~ category', category);
   const categoryData = useMemo(() => {
     return category?.categorys?.map(item => ({
       id: item.slug,
@@ -41,24 +66,52 @@ const Categories = () => {
   }, [category]);
 
   const productData = useMemo(() => {
-    return products?.product?.filter(item => item?.category?.slug === selected);
-  }, [products, selected]);
+    let temp = [];
 
-  console.log(productData);
+    if (params?.slug) {
+      temp = products?.product?.filter(
+        item => item?.category?.slug === params?.slug,
+      );
+    } else {
+      temp = products?.product?.filter(item =>
+        item?.name?.toLowerCase().includes(params?.search?.toLowerCase()),
+      );
+    }
+
+    switch (selected) {
+      case 'NAME_A-Z':
+        temp = temp.sort((a, b) =>
+          a.name > b.name ? 1 : b.name > a.name ? -1 : 0,
+        );
+        break;
+      case 'NAME_Z-A':
+        temp = temp.sort((a, b) =>
+          a.name < b.name ? 1 : b.name < a.name ? -1 : 0,
+        );
+        break;
+      case 'PRICE_HIGH-LOW':
+        temp = temp.sort((a, b) => b.selling_price - a.selling_price);
+        break;
+      case 'PRICE_LOW-HIGH':
+        temp = temp.sort((a, b) => a.selling_price - b.selling_price);
+        break;
+      default:
+        temp = temp.sort((a, b) => a.id - b.id);
+    }
+    return temp;
+  }, [products, selected]);
 
   return (
     <View style={styles.container}>
       <View style={[styles.heder, {flexDirection: 'row'}]}>
         <View style={[styles.back, {flex: 1, flexDirection: 'column'}]}>
-          <TouchableOpacity style={styles.buttonback}>
-            <Image
-              style={styles.FaceLogoback}
-              source={require('../../assets/Icons/3.png')}
-            />
-          </TouchableOpacity>
+          <ButtonBack pathBack={SITE_MAP.INDEX} />
           <Text style={styles.fast}>Fast</Text>
           <Text style={styles.food}>Food</Text>
-          <Text style={styles.tyet}>80 type of pizza</Text>
+          <Text style={styles.tyet}>
+            {productData?.length} type of{' '}
+            {params?.slug || `search ${params?.search}`}
+          </Text>
         </View>
 
         <Image
@@ -68,184 +121,45 @@ const Categories = () => {
       </View>
       <View style={[styles.Main, {flexDirection: 'row'}]}>
         <View style={[styles.text1]}>
-          <Text style={styles.tyett}>Category:</Text>
+          <Text style={styles.tyett}>Sort:</Text>
         </View>
         <View style={styles.ComboBox}>
-          <SelectList
+          {/* <SelectList
             setSelected={val => setSelected(val)}
-            data={categoryData}
+            data={optionSort}
             save="value"
             dropdownStyles={{
               backgroundColor: Constant.color.white,
               width: 150,
             }}
             boxStyles={{width: 150, marginTop: 4}}
-          />
+          /> */}
+          <Select
+            selectedValue={selected}
+            accessibilityLabel="Select Sort"
+            placeholder="Select Sort"
+            placeholderTextColor="#111719"
+            height="44"
+            _selectedItem={{
+              endIcon: <CheckIcon size="5" />,
+            }}
+            borderColor="#9796A1"
+            borderRadius={10}
+            fontSize="16"
+            onValueChange={itemValue => {
+              setSelected(itemValue);
+            }}>
+            {optionSort?.map(({name, value, id}) => (
+              <Select.Item label={name} value={value} key={id} />
+            ))}
+          </Select>
         </View>
       </View>
+
       <ScrollView style={styles.ScrollView}>
         {productData?.map(item => (
-          <View style={styles.ListMon} key={item.id}>
-            <TouchableOpacity style={styles.buttonMon}>
-              <View
-                style={{
-                  backgroundColor: Constant.color.main,
-                  paddingHorizontal: 70,
-                  borderRadius: 20,
-                }}>
-                <Image
-                  style={[styles.FaceLogoMon]}
-                  source={{uri: `${Constant.REACT_APP_API_URL}${item.img01}`}}
-                />
-              </View>
-            </TouchableOpacity>
-            <View style={styles.IconYT}>
-              <TouchableOpacity style={styles.buttonYT}>
-                <Image source={require('../../assets/Icons/love.png')} />
-              </TouchableOpacity>
-            </View>
-
-            <View style={[styles.textgia]}>
-              <Text style={styles.gia}>{item.selling_price}</Text>
-            </View>
-            <View style={[styles.textsao]}>
-              <Text style={styles.sao}>5 </Text>
-              <Image
-                style={styles.sao}
-                source={require('../../assets/Icons/star.png')}
-              />
-            </View>
-            <View style={[styles.Tenmon]}>
-              <Text style={styles.namemon}>{item.name}</Text>
-            </View>
-            <View style={[styles.PL]}>
-              <Text style={styles.phuluc}>Chicken, Cheese and pineapple</Text>
-            </View>
-          </View>
+          <ProductItem key={item.id} item={item} />
         ))}
-        {/* <View style={styles.ListMon}>
-          <TouchableOpacity style={styles.buttonMon}>
-            <Image
-              style={[styles.FaceLogoMon]}
-              source={require('../../assets/Icons/5.png')}
-            />
-          </TouchableOpacity>
-          <View style={styles.IconYT}>
-            <TouchableOpacity style={styles.buttonYT}>
-              <Image source={require('../../assets/Icons/love.png')} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.textgia]}>
-            <Text style={styles.gia}>$10.35</Text>
-          </View>
-          <View style={[styles.textsao]}>
-            <Text style={styles.sao}>4.5 </Text>
-            <Image
-              style={styles.sao}
-              source={require('../../assets/Icons/star.png')}
-            />
-          </View>
-          <View style={[styles.Tenmon]}>
-            <Text style={styles.namemon}>Chicken Hawaiian</Text>
-          </View>
-          <View style={[styles.PL]}>
-            <Text style={styles.phuluc}>Chicken, Cheese and pineapple</Text>
-          </View>
-        </View>
-
-        <View style={styles.ListMon}>
-          <TouchableOpacity style={styles.buttonMon}>
-            <Image
-              style={[styles.FaceLogoMon]}
-              source={require('../../assets/Icons/5.png')}
-            />
-          </TouchableOpacity>
-          <View style={styles.IconYT}>
-            <TouchableOpacity style={styles.buttonYT}>
-              <Image source={require('../../assets/Icons/love.png')} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.textgia]}>
-            <Text style={styles.gia}>$10.35</Text>
-          </View>
-          <View style={[styles.textsao]}>
-            <Text style={styles.sao}>4.5 </Text>
-            <Image
-              style={styles.sao}
-              source={require('../../assets/Icons/star.png')}
-            />
-          </View>
-          <View style={[styles.Tenmon]}>
-            <Text style={styles.namemon}>Chicken Hawaiian</Text>
-          </View>
-          <View style={[styles.PL]}>
-            <Text style={styles.phuluc}>Chicken, Cheese and pineapple</Text>
-          </View>
-        </View>
-
-        <View style={styles.ListMon}>
-          <TouchableOpacity style={styles.buttonMon}>
-            <Image
-              style={[styles.FaceLogoMon]}
-              source={require('../../assets/Icons/5.png')}
-            />
-          </TouchableOpacity>
-          <View style={styles.IconYT}>
-            <TouchableOpacity style={styles.buttonYT}>
-              <Image source={require('../../assets/Icons/love.png')} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.textgia]}>
-            <Text style={styles.gia}>$10.35</Text>
-          </View>
-          <View style={[styles.textsao]}>
-            <Text style={styles.sao}>4.5 </Text>
-            <Image
-              style={styles.sao}
-              source={require('../../assets/Icons/star.png')}
-            />
-          </View>
-          <View style={[styles.Tenmon]}>
-            <Text style={styles.namemon}>Chicken Hawaiian</Text>
-          </View>
-          <View style={[styles.PL]}>
-            <Text style={styles.phuluc}>Chicken, Cheese and pineapple</Text>
-          </View>
-        </View>
-
-        <View style={styles.ListMon}>
-          <TouchableOpacity style={styles.buttonMon}>
-            <Image
-              style={[styles.FaceLogoMon]}
-              source={require('../../assets/Icons/5.png')}
-            />
-          </TouchableOpacity>
-          <View style={styles.IconYT}>
-            <TouchableOpacity style={styles.buttonYT}>
-              <Image source={require('../../assets/Icons/love.png')} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.textgia]}>
-            <Text style={styles.gia}>$10.35</Text>
-          </View>
-          <View style={[styles.textsao]}>
-            <Text style={styles.sao}>4.5 </Text>
-            <Image
-              style={styles.sao}
-              source={require('../../assets/Icons/star.png')}
-            />
-          </View>
-          <View style={[styles.Tenmon]}>
-            <Text style={styles.namemon}>Chicken Hawaiian</Text>
-          </View>
-          <View style={[styles.PL]}>
-            <Text style={styles.phuluc}>Chicken, Cheese and pineapple</Text>
-          </View>
-        </View> */}
       </ScrollView>
     </View>
   );
@@ -254,19 +168,22 @@ const Categories = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Constant.color.white,
+    flex: 1,
   },
   ScrollView: {
-    position: 'relative',
-    marginBottom: 200,
+    // position: 'relative',
+    // paddingBottom: 200,
+    height: 300,
   },
   Main: {
     marginTop: 30,
+    marginBottom: -30,
   },
   ListMon: {
     position: 'relative',
     marginLeft: 30,
     marginRight: 30,
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   FaceLogoMon: {
     height: 200,
@@ -275,7 +192,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   Tenmon: {
-    marginTop: 10,
+    // marginTop: 10,
   },
   FaceLogoback: {
     height: 60,
@@ -288,22 +205,24 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     fontSize: 44,
     fontWeight: 'bold',
+    marginTop: 80,
   },
   food: {
     color: '#FE724C',
     marginLeft: 30,
     fontSize: 50,
+    marginTop: -14,
     fontWeight: 'bold',
   },
   tyet: {
     color: '#9796A1',
     marginLeft: 30,
-    fontSize: 18,
+    fontSize: 16,
   },
   tyett: {
     color: '#111719',
     marginLeft: 30,
-    marginTop: 20,
+    marginTop: 15,
     fontSize: 16,
   },
   ComboBox: {
@@ -312,6 +231,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginTop: 5,
     zIndex: 100,
+    width: 200,
   },
 
   namemon: {

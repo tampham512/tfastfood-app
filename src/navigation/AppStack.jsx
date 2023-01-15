@@ -20,6 +20,8 @@ import Categories from 'src/pages/Categories';
 import Reviews from 'src/pages/Reviews';
 import Rating from 'src/pages/Rating';
 import RatingService from 'src/pages/RatingService';
+import Order from 'src/pages/Order';
+import Cart from 'src/pages/Cart';
 
 const Drawer = createDrawerNavigator();
 const AppStack = () => {
@@ -128,7 +130,7 @@ const AppStack = () => {
         }}
       />
       <Drawer.Screen
-        name="RatingService"
+        name={SITE_MAP.RATINGSERVICE}
         component={RatingService}
         options={{
           drawerIcon: ({color}) => (
@@ -137,8 +139,26 @@ const AppStack = () => {
         }}
       />
       <Drawer.Screen
-        name="Reviews"
+        name={SITE_MAP.REVIEWS}
         component={Reviews}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name={SITE_MAP.ORDER}
+        component={Order}
+        options={{
+          drawerIcon: ({color}) => (
+            <Ionicons name="timer-outline" size={22} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name={SITE_MAP.CART}
+        component={Cart}
         options={{
           drawerIcon: ({color}) => (
             <Ionicons name="timer-outline" size={22} color={color} />

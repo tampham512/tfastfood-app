@@ -1,221 +1,314 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Image, TouchableOpacity, View, ScrollView, Text} from 'react-native';
 import Navigation from 'src/components/Navigation';
 import {Radio, Center, NativeBaseProvider} from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useNavigation, useRoute} from '@react-navigation/core';
+import {useGetDetailProductQuery} from 'src/services/ProductAPI';
+import {ButtonBack} from 'src/components/Button/ButtonBack';
+import Constant from 'src/controller/Constant';
+import {numberWithCommas, starMedium} from 'src/utils/utils';
+import RenderHtml from 'react-native-render-html';
+import {useDispatch, useSelector} from 'react-redux';
+import {addItems} from 'src/redux/slices/cartSlice';
+import Button from 'src/components/Button';
+import useUnmount from 'src/hooks/useUnmount';
+import {SITE_MAP} from 'src/utils/constants/Path';
+import {addItemsFavorite} from 'src/redux/slices/favoriteSlice';
 
 const Details = () => {
   const [value, setValue] = React.useState('one');
+  const navigation = useNavigation();
+  const [quantity, setQuantity] = useState(1);
+  const route = useRoute();
+  const dispatch = useDispatch();
+  const {userInfo} = useSelector(state => state.auth);
+  const dataCart = useSelector(state => state.cart);
+  const dataFavorite = useSelector(state => state.favorite);
+
+  const {
+    data: productDetail,
+    isError,
+    isFetching,
+  } = useGetDetailProductQuery(
+    {slug: route?.params?.slug},
+    {refetchOnMountOrArgChange: true, skip: !route?.params?.slug},
+  );
+
+  const onPressBack = () => {
+    navigation.goBack();
+  };
+  useEffect(() => {
+    if (route?.params?.slug) {
+      setQuantity(1);
+    }
+  }, [route?.params?.slug]);
+
+  const handlePlus = () => {
+    setQuantity(prev => {
+      return prev + 1;
+    });
+  };
+  const handleMinus = () => {
+    setQuantity(prev => {
+      if (prev <= 1) {
+        return 1;
+      }
+      return prev - 1;
+    });
+  };
+  const handleAddToCart = () => {
+    dispatch(
+      addItems({
+        idProduct: productDetail?.product.id,
+        slug: productDetail?.product.slug,
+        quantity: quantity,
+        price: productDetail?.product.selling_price,
+        idUser: userInfo?.id,
+        product: productDetail?.product,
+      }),
+    );
+  };
+  const handleAddFavorite = () => {
+    dispatch(
+      addItemsFavorite({
+        idProduct: productDetail?.product.id,
+        slug: productDetail?.product.slug,
+        price: productDetail?.product.selling_price,
+        idUser: userInfo?.id,
+        product: productDetail?.product,
+      }),
+    );
+  };
+  const handleOrder = () => {
+    dispatch(
+      addItems({
+        idProduct: productDetail?.product.id,
+        slug: productDetail?.product.slug,
+        quantity: quantity,
+        price: productDetail?.product.selling_price,
+        idUser: userInfo?.id,
+        product: productDetail?.product,
+      }),
+    );
+    navigation.navigate(SITE_MAP.CART);
+  };
+  const gotoReview = () => {
+    navigation.navigate(SITE_MAP.REVIEWS, {
+      review: productDetail?.product?.review,
+      slug: productDetail?.product?.slug,
+    });
+  };
+
+  console.log(productDetail);
   return (
-    <Navigation>
-      <View
-        style={{
-          zIndex: 1,
-        }}>
-        <ScrollView>
+    <View
+      style={{
+        zIndex: 1,
+        flex: 1,
+      }}>
+      <ScrollView>
+        <ButtonBack />
+        <View style={{paddingHorizontal: 22, paddingVertical: 27}}>
           <View
             style={{
-              position: 'absolute',
-              width: 38,
-              height: 38,
-              borderRadius: 12,
+              height: 206,
+              width: '100%',
               backgroundColor: 'white',
-              justifyContent: 'center',
-              top: 37,
-              left: 32,
-              zIndex: 8,
-              alignItems: 'center',
-              shadowColor: 'red',
+              borderRadius: 20,
+              shadowColor: Constant.color.gray,
               shadowOffset: {
                 width: 0,
                 height: 2,
               },
               shadowOpacity: 0.2,
-              shadowRadius: 5,
+              shadowRadius: 20,
               elevation: 5,
             }}>
-            <Ionicons name="chevron-back-outline" size={22} color={'black'} />
+            <Image
+              source={{
+                uri: `${Constant.REACT_APP_API_URL}${productDetail?.product?.img01}`,
+              }}
+              style={{
+                height: 206,
+                resizeMode: 'contain',
+                borderRadius: 15,
+              }}></Image>
           </View>
-          <View style={{paddingHorizontal: 22, paddingVertical: 27}}>
-            <View>
-              <Image
-                source={require('../../assets/Icons/card.png')}
-                style={{
-                  height: 206,
-                  width: '100%',
-                  borderRadius: 15,
-                }}></Image>
-            </View>
-            <Text
-              style={{
-                color: '323643',
-                fontSize: 28,
-                fontWeight: '600',
-                marginTop: 22,
-              }}>
-              Ground Beef Tacos
-            </Text>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: 12,
-              }}>
-              <Ionicons name="star" size={22} color={'yellow'} />
+          <Text
+            style={{
+              color: '323643',
+              fontSize: 28,
+              fontWeight: '600',
+              marginTop: 22,
+            }}>
+            {productDetail?.product?.name}
+          </Text>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 10,
+            }}>
+            <Ionicons name="star" size={22} color={'yellow'} />
 
-              <Text
-                style={{
-                  color: '#111719',
-                  fontSize: 14,
-                  fontWeight: '600',
-                  marginRight: 5,
-                  marginLeft: 9,
-                }}>
-                4.5
-              </Text>
-              <Text style={{color: '#9796A1', fontSize: 14, fontWeight: '400'}}>
-                (30+)
-              </Text>
-            </View>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginTop: 12,
-              }}>
-              <Text style={{fontSize: 24, fontWeight: '500', color: '#FE724C'}}>
-                $9.50
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <Ionicons
-                  name="remove-circle-sharp"
-                  size={30}
-                  color="#FE724C"
-                />
-                <Text
-                  style={{
-                    marginHorizontal: 10,
-                    color: '#000000',
-                    fontSize: 16,
-                    fontWeight: '600',
-                  }}>
-                  20
-                </Text>
-                <Ionicons name="add-circle-sharp" size={30} color="#FE724C" />
-              </View>
-            </View>
             <Text
               style={{
-                color: '#858992',
-                fontSize: 15,
-                fontWeight: '400',
-                lineHeight: 24,
-                marginTop: 25,
+                color: '#111719',
+                fontSize: 14,
+                fontWeight: '600',
+                marginRight: 5,
+                marginLeft: 9,
               }}>
-              Brown the beef better. Lean ground beef – I like to use 85% lean
-              angus. Garlic – use fresh chopped. Spices – chili powder, cumin,
-              onion powder.
+              {starMedium(productDetail?.product?.review)}
             </Text>
-            <View>
+            <TouchableOpacity onPress={gotoReview}>
+              <Text style={{color: '#9796A1', fontSize: 14, fontWeight: '400'}}>
+                ({productDetail?.product?.review?.length || 0} Reviews)
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginTop: 5,
+            }}>
+            <Text style={{fontSize: 24, fontWeight: '500', color: '#FE724C'}}>
+              {numberWithCommas(productDetail?.product?.selling_price)}
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <Ionicons
+                name="remove-circle-sharp"
+                size={30}
+                color="#FE724C"
+                onPress={handleMinus}
+              />
               <Text
                 style={{
-                  color: '#323643',
-                  fontSize: 18,
+                  marginHorizontal: 10,
+                  color: '#000000',
+                  fontSize: 16,
                   fontWeight: '600',
-                  marginTop: 22,
                 }}>
-                Choice of Add On
+                {quantity}
               </Text>
-              <Radio.Group
-                name="myRadioGroup"
-                accessibilityLabel="favorite number"
-                value={value}
-                onChange={nextValue => {
-                  setValue(nextValue);
-                }}>
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginTop: 12,
-                    width: '100%',
-                  }}>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Image
-                      source={require('../../assets/Icons/card.png')}
-                      style={{height: 50, width: 50, marginRight: 10}}></Image>
-                    <Text
-                      style={{
-                        color: '#000000',
-                        fontSize: 14,
-                        fontWeight: '400',
-                      }}>
-                      Pepper Julienned
-                    </Text>
-                  </View>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text
-                      style={{
-                        color: '#000000',
-                        fontSize: 14,
-                        fontWeight: '400',
-                        marginRight: 10,
-                      }}>
-                      +$2.30
-                    </Text>
-                    <Radio colorScheme="orange" value="one"></Radio>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginTop: 12,
-                    width: '100%',
-                  }}>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Image
-                      source={require('../../assets/Icons/card.png')}
-                      style={{height: 50, width: 50, marginRight: 10}}></Image>
-                    <Text
-                      style={{
-                        color: '#000000',
-                        fontSize: 14,
-                        fontWeight: '400',
-                      }}>
-                      Pepper Julienned
-                    </Text>
-                  </View>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text
-                      style={{
-                        color: '#000000',
-                        fontSize: 14,
-                        fontWeight: '400',
-                        marginRight: 10,
-                      }}>
-                      +$2.30
-                    </Text>
-                    <Radio colorScheme="orange" value="tow"></Radio>
-                  </View>
-                </View>
-              </Radio.Group>
+              <Ionicons
+                name="add-circle-sharp"
+                size={30}
+                color="#FE724C"
+                onPress={handlePlus}
+              />
             </View>
           </View>
-        </ScrollView>
+          <View
+            style={{
+              color: '#858992',
+              fontSize: 18,
+              fontWeight: '400',
+              marginTop: 25,
+              height: 'auto',
+              width: '100%',
+              marginRight: 10,
+            }}>
+            <RenderHtml
+              contentWidth={Constant.screen.width - 40}
+              source={{
+                html: productDetail?.product?.description,
+              }}
+            />
+          </View>
+
+          <View
+            style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+            <Text style={{marginRight: 5}}>SHARE:</Text>
+            <Ionicons
+              name="logo-youtube"
+              size={22}
+              color={Constant.color.main}
+              style={{marginRight: 5}}
+            />
+            <Ionicons
+              name="logo-facebook"
+              size={22}
+              color={Constant.color.main}
+              style={{marginRight: 5}}
+            />
+            <Ionicons
+              name="logo-twitter"
+              size={22}
+              color={Constant.color.main}
+            />
+          </View>
+          <View
+            style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
+            <Ionicons
+              name="megaphone-outline"
+              size={22}
+              color={Constant.color.main}
+              style={{marginRight: 5}}
+            />
+            <Text style={{marginRight: 5}}>Privacy Policy.</Text>
+          </View>
+          <View
+            style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
+            <Ionicons
+              name="hand-left-outline"
+              size={22}
+              color={Constant.color.main}
+              style={{marginRight: 5}}
+            />
+            <Text style={{marginRight: 5}}>Delivery Policy.</Text>
+          </View>
+        </View>
+      </ScrollView>
+      <View
+        style={{
+          position: 'absolute',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          bottom: 15,
+          left: 0,
+          right: 0,
+          paddingHorizontal: 10,
+        }}>
+        <Button
+          onPress={handleAddToCart}
+          title="Add to cart"
+          style={{width: '40%', marginRight: 10}}
+        />
+        <TouchableOpacity
+          onPress={handleAddFavorite}
+          style={{
+            height: 38,
+            width: 38,
+            borderRadius: 38,
+            backgroundColor: Constant.color.white,
+            shadowColor: Constant.color.gray,
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 38,
+            elevation: 5,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: 10,
+          }}>
+          <Ionicons name="heart" size={28} color={Constant.color.main} />
+        </TouchableOpacity>
+        <Button onPress={handleOrder} title="Order" style={{width: '40%'}} />
       </View>
-    </Navigation>
+    </View>
   );
 };
 

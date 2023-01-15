@@ -1,3 +1,4 @@
+import {useNavigation, useRoute} from '@react-navigation/core';
 import {
   Image,
   ScrollView,
@@ -8,8 +9,17 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Constant from 'src/controller/Constant';
+import {SITE_MAP} from 'src/utils/constants/Path';
+import Util from 'src/utils/utils';
 
 function Index() {
+  const route = useRoute();
+  console.log(route?.params);
+  const {slug, review} = route?.params;
+  const {navigate} = useNavigation();
+  const gotoBack = () => {
+    navigate(SITE_MAP.DETAILS, {slug});
+  };
   return (
     <View>
       <View
@@ -34,8 +44,14 @@ function Index() {
             top: 20,
             left: 20,
             alignItems: 'center',
-          }}>
-          <Ionicons name="chevron-back-outline" size={32} color={'black'} />
+            justifyContent: 'center',
+          }}
+          onPress={gotoBack}>
+          <Ionicons
+            name="chevron-back-outline"
+            size={24}
+            color={Constant.color.gray}
+          />
         </TouchableOpacity>
         <Text
           style={{
@@ -48,540 +64,106 @@ function Index() {
           Reviews
         </Text>
       </View>
-      <View
-        style={{
-          flex: 2,
-          position: 'absolute',
-          top: 70,
-          left: 10,
-        }}>
-        <TextInput
-          onChangeText={text => {
-            console.log(text);
-          }}
-          placeholder="Write your review"
+
+      {review?.length > 0 ? (
+        <ScrollView
           style={{
-            borderWidth: 1,
-            borderColor: '#959589',
-            width: 370,
-            height: 50,
-            fontSize: 16,
-            top: 30,
-            paddingLeft: 60,
-            textcolor: '#959589',
-            borderRadius: 10,
-          }}></TextInput>
-        <Image
-          style={{
-            borderRadius: 100,
-            width: 35,
-            height: 35,
-            bottom: 12,
-            left: 12,
-          }}
-          source={require('../../assets/Icons/imguser.png')}></Image>
-      </View>
-      <ScrollView
-        style={{
-          top: 190,
-        }}>
-        <View
-          style={{
-            height: 150,
+            top: 80,
+            marginBottom: 50,
+            marginLeft: 5,
           }}>
-          <Image
-            style={{
-              borderRadius: 100,
-              width: 50,
-              height: 50,
-              left: 12,
-            }}
-            source={require('../../assets/Icons/avatar.png')}></Image>
-          <View
-            style={{
-              height: 20,
-              width: 20,
-              backgroundColor: '#FFC529',
-              borderRadius: 100,
-              left: 50,
-              bottom: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
+          {review.map(item => (
+            <View
+              key={item.id}
               style={{
-                fontSize: 10,
-                color: 'white',
+                height: 'auto',
               }}>
-              5.0
-            </Text>
-          </View>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: '500',
-              color: 'black',
-              left: 80,
-              bottom: 67,
-            }}>
-            Alyce Lambo
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: '500',
-              color: 'gray',
-              left: 80,
-              bottom: 65,
-            }}>
-            25/12/2022
-          </Text>
-          <Text
-            style={{
-              width: 365,
-              left: 15,
-              bottom: 50,
-            }}>
-            Really convenient and the points system helps benefit loyalty. Some
-            mild glitches here and there, but nothing too egregious. Obviously
-            needs to roll out to more remote.
-          </Text>
-        </View>
-        <View
+              <View
+                style={{
+                  borderRadius: 100,
+                  width: 50,
+                  height: 50,
+                  left: 12,
+                  backgroundColor: Constant.color.main,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    textTransform: 'uppercase',
+                    fontWeight: 'bold',
+                    color: Constant.color.white,
+                  }}>
+                  {item.user.username.slice(0, 2)}
+                </Text>
+              </View>
+              <View
+                style={{
+                  height: 20,
+                  width: 20,
+                  backgroundColor: '#FFC529',
+                  borderRadius: 100,
+                  left: 50,
+                  bottom: 20,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    color: 'white',
+                  }}>
+                  {item.rate_star}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: '500',
+                  color: 'black',
+                  left: 80,
+                  bottom: 67,
+                }}>
+                {item.user.username}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: '500',
+                  color: 'gray',
+                  left: 80,
+                  bottom: 65,
+                }}>
+                {Util.format_date_time(item.created_at)}
+              </Text>
+              <Text
+                style={{
+                  width: 365,
+                  left: 15,
+                  bottom: 50,
+                  // height: 'auto',
+                }}>
+                {item.content}
+              </Text>
+              {/* <View
+                style={{
+                  width: '100%',
+                  height: 1,
+                  backgroundColor: Constant.color.gray,
+                }}></View> */}
+            </View>
+          ))}
+        </ScrollView>
+      ) : (
+        <Text
           style={{
-            height: 150,
+            top: 80,
+            marginLeft: 20,
+            fontSize: 18,
           }}>
-          <Image
-            style={{
-              borderRadius: 100,
-              width: 50,
-              height: 50,
-              left: 12,
-            }}
-            source={require('../../assets/Icons/avatar.png')}></Image>
-          <View
-            style={{
-              height: 20,
-              width: 20,
-              backgroundColor: '#FFC529',
-              borderRadius: 100,
-              left: 50,
-              bottom: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 10,
-                color: 'white',
-              }}>
-              5.0
-            </Text>
-          </View>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: '500',
-              color: 'black',
-              left: 80,
-              bottom: 67,
-            }}>
-            Alyce Lambo
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: '500',
-              color: 'gray',
-              left: 80,
-              bottom: 65,
-            }}>
-            25/12/2022
-          </Text>
-          <Text
-            style={{
-              width: 365,
-              left: 15,
-              bottom: 50,
-            }}>
-            Really convenient and the points system helps benefit loyalty. Some
-            mild glitches here and there, but nothing too egregious. Obviously
-            needs to roll out to more remote.
-          </Text>
-        </View>
-        <View
-          style={{
-            height: 150,
-          }}>
-          <Image
-            style={{
-              borderRadius: 100,
-              width: 50,
-              height: 50,
-              left: 12,
-            }}
-            source={require('../../assets/Icons/avatar.png')}></Image>
-          <View
-            style={{
-              height: 20,
-              width: 20,
-              backgroundColor: '#FFC529',
-              borderRadius: 100,
-              left: 50,
-              bottom: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 10,
-                color: 'white',
-              }}>
-              5.0
-            </Text>
-          </View>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: '500',
-              color: 'black',
-              left: 80,
-              bottom: 67,
-            }}>
-            Alyce Lambo
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: '500',
-              color: 'gray',
-              left: 80,
-              bottom: 65,
-            }}>
-            25/12/2022
-          </Text>
-          <Text
-            style={{
-              width: 365,
-              left: 15,
-              bottom: 50,
-            }}>
-            Really convenient and the points system helps benefit loyalty. Some
-            mild glitches here and there, but nothing too egregious. Obviously
-            needs to roll out to more remote.
-          </Text>
-        </View>
-        <View
-          style={{
-            height: 150,
-          }}>
-          <Image
-            style={{
-              borderRadius: 100,
-              width: 50,
-              height: 50,
-              left: 12,
-            }}
-            source={require('../../assets/Icons/avatar.png')}></Image>
-          <View
-            style={{
-              height: 20,
-              width: 20,
-              backgroundColor: '#FFC529',
-              borderRadius: 100,
-              left: 50,
-              bottom: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 10,
-                color: 'white',
-              }}>
-              5.0
-            </Text>
-          </View>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: '500',
-              color: 'black',
-              left: 80,
-              bottom: 67,
-            }}>
-            Alyce Lambo
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: '500',
-              color: 'gray',
-              left: 80,
-              bottom: 65,
-            }}>
-            25/12/2022
-          </Text>
-          <Text
-            style={{
-              width: 365,
-              left: 15,
-              bottom: 50,
-            }}>
-            Really convenient and the points system helps benefit loyalty. Some
-            mild glitches here and there, but nothing too egregious. Obviously
-            needs to roll out to more remote.
-          </Text>
-        </View>
-        <View
-          style={{
-            height: 150,
-          }}>
-          <Image
-            style={{
-              borderRadius: 100,
-              width: 50,
-              height: 50,
-              left: 12,
-            }}
-            source={require('../../assets/Icons/avatar.png')}></Image>
-          <View
-            style={{
-              height: 20,
-              width: 20,
-              backgroundColor: '#FFC529',
-              borderRadius: 100,
-              left: 50,
-              bottom: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 10,
-                color: 'white',
-              }}>
-              5.0
-            </Text>
-          </View>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: '500',
-              color: 'black',
-              left: 80,
-              bottom: 67,
-            }}>
-            Alyce Lambo
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: '500',
-              color: 'gray',
-              left: 80,
-              bottom: 65,
-            }}>
-            25/12/2022
-          </Text>
-          <Text
-            style={{
-              width: 365,
-              left: 15,
-              bottom: 50,
-            }}>
-            Really convenient and the points system helps benefit loyalty. Some
-            mild glitches here and there, but nothing too egregious. Obviously
-            needs to roll out to more remote.
-          </Text>
-        </View>
-        <View
-          style={{
-            height: 150,
-          }}>
-          <Image
-            style={{
-              borderRadius: 100,
-              width: 50,
-              height: 50,
-              left: 12,
-            }}
-            source={require('../../assets/Icons/avatar.png')}></Image>
-          <View
-            style={{
-              height: 20,
-              width: 20,
-              backgroundColor: '#FFC529',
-              borderRadius: 100,
-              left: 50,
-              bottom: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 10,
-                color: 'white',
-              }}>
-              5.0
-            </Text>
-          </View>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: '500',
-              color: 'black',
-              left: 80,
-              bottom: 67,
-            }}>
-            Alyce Lambo
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: '500',
-              color: 'gray',
-              left: 80,
-              bottom: 65,
-            }}>
-            25/12/2022
-          </Text>
-          <Text
-            style={{
-              width: 365,
-              left: 15,
-              bottom: 50,
-            }}>
-            Really convenient and the points system helps benefit loyalty. Some
-            mild glitches here and there, but nothing too egregious. Obviously
-            needs to roll out to more remote.
-          </Text>
-        </View>
-        <View
-          style={{
-            height: 150,
-          }}>
-          <Image
-            style={{
-              borderRadius: 100,
-              width: 50,
-              height: 50,
-              left: 12,
-            }}
-            source={require('../../assets/Icons/avatar.png')}></Image>
-          <View
-            style={{
-              height: 20,
-              width: 20,
-              backgroundColor: '#FFC529',
-              borderRadius: 100,
-              left: 50,
-              bottom: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 10,
-                color: 'white',
-              }}>
-              5.0
-            </Text>
-          </View>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: '500',
-              color: 'black',
-              left: 80,
-              bottom: 67,
-            }}>
-            Alyce Lambo
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: '500',
-              color: 'gray',
-              left: 80,
-              bottom: 65,
-            }}>
-            25/12/2022
-          </Text>
-          <Text
-            style={{
-              width: 365,
-              left: 15,
-              bottom: 50,
-            }}>
-            Really convenient and the points system helps benefit loyalty. Some
-            mild glitches here and there, but nothing too egregious. Obviously
-            needs to roll out to more remote.
-          </Text>
-        </View>
-        <View
-          style={{
-            height: 150,
-          }}>
-          <Image
-            style={{
-              borderRadius: 100,
-              width: 50,
-              height: 50,
-              left: 12,
-            }}
-            source={require('../../assets/Icons/avatar.png')}></Image>
-          <View
-            style={{
-              height: 20,
-              width: 20,
-              backgroundColor: '#FFC529',
-              borderRadius: 100,
-              left: 50,
-              bottom: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 10,
-                color: 'white',
-              }}>
-              5.0
-            </Text>
-          </View>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: '500',
-              color: 'black',
-              left: 80,
-              bottom: 67,
-            }}>
-            Alyce Lambo
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: '500',
-              color: 'gray',
-              left: 80,
-              bottom: 65,
-            }}>
-            25/12/2022
-          </Text>
-          <Text
-            style={{
-              width: 365,
-              left: 15,
-              bottom: 50,
-            }}>
-            Really convenient and the points system helps benefit loyalty. Some
-            mild glitches here and there, but nothing too egregious. Obviously
-            needs to roll out to more remote.
-          </Text>
-        </View>
-      </ScrollView>
+          No reviews
+        </Text>
+      )}
     </View>
   );
 }

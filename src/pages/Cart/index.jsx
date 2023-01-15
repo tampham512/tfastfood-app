@@ -1,5 +1,6 @@
-import {Center, ScrollView} from 'native-base';
-import React from 'react';
+import {Center, ScrollView, useToast} from 'native-base';
+import React, {useMemo, useState} from 'react';
+import {DrawerActions} from '@react-navigation/native';
 import {
   View,
   TouchableOpacity,
@@ -15,147 +16,335 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Constant from 'src/controller/Constant';
 import Utils from 'src/utils/utils';
 import CartItem from 'src/components/Cart/CartItem';
+import {useDispatch, useSelector} from 'react-redux';
+import {useNavigation, useRoute} from '@react-navigation/core';
+import {SITE_MAP} from 'src/utils/constants/Path';
+import {
+  useLazyGetDiscountsQuery,
+  useOrderBillMutation,
+} from 'src/services/OrderAPI';
+import {useGetProvincesQuery} from 'src/services/ProvincesAPI';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {ButtonBack} from 'src/components/Button/ButtonBack';
+import {updatePathHistory} from 'src/redux/slices/commonSlice';
+import useUnmount from 'src/hooks/useUnmount';
+import Alert from 'src/components/Alert';
+import {clear} from 'src/redux/slices/cartSlice';
 
-const tax_and_fees = 5000;
-const delivery = 15000;
-
-const cart_list = [
-  {
-    title: 'Red n hot pizza',
-    description: 'Spicy chicken, beef',
-    price: 30000,
-    image: Constant.images.pizza,
-    quantity: 1,
-  },
-  {
-    title: 'Red n hot pizza',
-    description: 'Spicy chicken, beef',
-    price: 30000,
-    image: Constant.images.pizza,
-    quantity: 1,
-  },
-  {
-    title: 'Red n hot pizza',
-    description: 'Spicy chicken, beef',
-    price: 30000,
-    image: Constant.images.pizza,
-    quantity: 1,
-  },
-  {
-    title: 'Red n hot pizza',
-    description: 'Spicy chicken, beef',
-    price: 30000,
-    image: Constant.images.pizza,
-    quantity: 1,
-  },
-  {
-    title: 'Red n hot pizza',
-    description: 'Spicy chicken, beef',
-    price: 30000,
-    image: Constant.images.pizza,
-    quantity: 1,
-  },
-];
+const DELIVERY = {
+  48: 15000,
+  49: 20000,
+};
 
 function Cart() {
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.back_btn}>
-          <Icon
-            name="chevron-back-sharp"
-            size={24}
-            color={Constant.color.black}></Icon>
-        </TouchableOpacity>
-        <View>
-          <Text style={styles.title}>Cart</Text>
-        </View>
-      </View>
+  const [getDiscountLazy] = useLazyGetDiscountsQuery();
+  const address = useSelector(state => state.address);
+  const toast = useToast();
+  console.log('🚀 ~ file: index.jsx:35 ~ Cart ~ address', address);
 
-      {/* <ScrollView style={styles.scroll_view}> */}
-      <View style={styles.list_cart_item}>
-        <FlatList
-          style={styles.flat_list_item}
-          data={cart_list}
-          renderItem={(item, index) => <CartItem cart_item={item} />}
-        />
-      </View>
-      {/* </ScrollView> */}
+  const [discountString, setDiscountString] = useState('');
+  const [discountMessage, setDiscountMessage] = useState('');
+  const [discountTotal, setDiscountTotal] = useState(0);
+  const [discountError, setDiscountError] = useState('');
+  const [orderBillProduct] = useOrderBillMutation();
 
-      <View style={styles.promotion_container}>
-        <View style={styles.promotion}>
-          <TextInput
-            style={styles.promotion_input}
-            placeholder="Promo Code"
-            placeholderTextColor={Constant.color.grey}
+  const dataCart = useSelector(state => state.cart);
+  const {userInfo} = useSelector(state => state.auth);
+  const {navigate, dispatch: dispatchNavi} = useNavigation();
+
+  const subPrice = useMemo(() => {
+    return (
+      dataCart?.value?.reduce(
+        (total, item) => total + Number(item.quantity) * Number(item.price),
+        0,
+      ) || 0
+    );
+  }, [dataCart]);
+  const totalDelivery = useMemo(() => {
+    if (address?.value?.ward?.code)
+      return DELIVERY?.[address?.value?.state?.code] || 0;
+    return 0;
+  }, [address?.value]);
+
+  const totalPrice = useMemo(
+    () => subPrice - discountTotal + totalDelivery,
+    [subPrice, discountTotal],
+  );
+
+  const handleGetDiscount = () => {
+    setDiscountTotal(0);
+    setDiscountMessage('');
+    console.log(discountString);
+    getDiscountLazy()
+      .unwrap()
+      .then(data => {
+        const getDiscount = data?.discounts?.filter(
+          item => item.idDiscount === discountString,
+        );
+        if (getDiscount.length > 0) {
+          const time_start = new Date(getDiscount[0].time_start);
+          const time_end = new Date(getDiscount[0].time_end);
+          const date = new Date();
+
+          if (getDiscount[0].time_start === null) {
+            if (
+              getDiscount[0].quatity <= getDiscount[0].quatity_used &&
+              getDiscount[0].quatity !== 0
+            ) {
+              setDiscountError('Out of use');
+            } else {
+              if (getDiscount[0].unit === 0) {
+                setDiscountTotal((getDiscount[0].value / 100) * totalPrice);
+                setDiscountMessage(` (Discount ${getDiscount[0].value}%) `);
+              } else {
+                setDiscountTotal(getDiscount[0].value);
+                setDiscountMessage(
+                  ` (Discount ${numberWithCommasTotal(getDiscount[0].value)})`,
+                );
+              }
+            }
+          } else {
+            if (time_start <= date && date <= time_end) {
+              if (
+                getDiscount[0].quatity <= getDiscount[0].quatity_used &&
+                getDiscount[0].quatity !== 0
+              ) {
+                setDiscountError('Out of use!');
+              } else {
+                if (getDiscount[0].unit === 0) {
+                  setDiscountTotal((getDiscount[0].value / 100) * totalPrice);
+                  setDiscountMessage(`(Discount ${getDiscount[0].value}%) `);
+                } else {
+                  setDiscountTotal(getDiscount[0].value);
+                  setDiscountMessage(
+                    ` (Discount ${numberWithCommasTotal(
+                      getDiscount[0].value,
+                    )})`,
+                  );
+                }
+              }
+            } else {
+              if (time_start > date) {
+                setDiscountError('The discount code has not been opened');
+              } else {
+                setDiscountError('The discount code has expired');
+              }
+            }
+          }
+        } else {
+          setDiscountError('The discount code does not exist!');
+        }
+      });
+  };
+  const handleGoToCheckOut = () => {
+    if (!address?.value?.ward?.code) {
+      toast.show({
+        placement: 'top',
+        render: () => (
+          <Alert
+            color="error"
+            status="error"
+            content="Please Choose Delivery Address"
           />
-          <TouchableOpacity style={styles.promotion_btn}>
-            <Text style={styles.promotion_btn_text}>Apply</Text>
+        ),
+      });
+      return;
+    }
+    if (dataCart?.value?.length > 0) {
+      const data = {
+        email: 'pttquangnam@gmail.com',
+        full_name: 'Phạm Thanh Tâm',
+        mobile_phone: '0339045945',
+        id_user: userInfo?.id,
+        product_list: dataCart?.value,
+        total_price: totalPrice - discountTotal + totalDelivery,
+        andress: `${address?.value?.street}, ${address?.value?.ward?.name}, ${address?.value?.district?.name}, ${address?.value?.state?.name}`,
+      };
+      orderBillProduct(data)
+        .unwrap()
+        .then(res => {
+          dispatch(clear());
+          toast.show({
+            placement: 'top',
+            render: () => (
+              <Alert color="success" status="success" content="Order Success" />
+            ),
+          });
+          const pushAction = DrawerActions.jumpTo(SITE_MAP.ORDER);
+          dispatchNavi(pushAction);
+        });
+    }
+
+    // navigate(SITE_MAP.ORDER);
+  };
+  const handleChangeAddress = () => {
+    navigate(SITE_MAP.ADDRESS);
+  };
+
+  const route = useRoute();
+  const dispatch = useDispatch();
+
+  useUnmount(() => {
+    dispatch(updatePathHistory({pathHistory: route.name}));
+    console.log('v');
+  });
+  return (
+    <ScrollView>
+      <View style={styles.container}>
+        <ButtonBack pathBack={SITE_MAP.INDEX} />
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.title}>Cart</Text>
+          </View>
+
+          <TouchableOpacity
+            onPress={handleChangeAddress}
+            style={{
+              position: 'absolute',
+
+              right: Constant.screen.width * 0.065,
+              height: 38,
+              width: 38,
+              borderRadius: 38,
+              backgroundColor: Constant.color.white,
+              shadowColor: Constant.color.gray,
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.2,
+              shadowRadius: 38,
+              elevation: 5,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: 10,
+            }}>
+            <Ionicons name="location" size={28} color={Constant.color.main} />
           </TouchableOpacity>
         </View>
+
+        {/* <ScrollView style={styles.scroll_view}> */}
+        {}
+        <View style={styles.list_cart_item}>
+          {dataCart?.value?.length > 0 ? (
+            <FlatList
+              style={styles.flat_list_item}
+              data={dataCart?.value}
+              renderItem={(item, index) => <CartItem cart_item={item} />}
+            />
+          ) : (
+            <Text style={{textAlign: 'left', width: '100%', marginLeft: 60}}>
+              No empty item.
+            </Text>
+          )}
+        </View>
+        {/* </ScrollView> */}
+
+        <View style={styles.promotion_container}>
+          <View style={styles.promotion}>
+            <TextInput
+              style={styles.promotion_input}
+              placeholder="Promo Code"
+              placeholderTextColor={Constant.color.grey}
+              onChangeText={value => setDiscountString(value)}
+              value={discountString}
+            />
+            <TouchableOpacity
+              style={styles.promotion_btn}
+              onPress={handleGetDiscount}>
+              <Text style={styles.promotion_btn_text}>Apply</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{height: 40}}>
+            {discountMessage && (
+              <Text
+                style={{
+                  color: Constant.color.main,
+                  textAlign: 'left',
+                  marginLeft: 10,
+                  width: '100%',
+                }}>
+                {discountMessage}
+              </Text>
+            )}
+            {discountError && (
+              <Text
+                style={{
+                  color: 'green',
+                  textAlign: 'left',
+                  marginLeft: 10,
+                  width: '100%',
+                }}>
+                {discountError}
+              </Text>
+            )}
+          </View>
+        </View>
+
+        <View style={styles.expense_list}>
+          <View style={styles.expense_item_container}>
+            <View style={styles.expense_item}>
+              <Text style={styles.expense_title}>Sub Total</Text>
+              <View style={styles.expense_text}>
+                <Text style={styles.expense_price}>
+                  {Utils.formatPrice(totalPrice, '')}
+                </Text>
+                <Text style={styles.expense_unit}>đ</Text>
+              </View>
+            </View>
+            <View style={styles.line}></View>
+          </View>
+
+          <View style={styles.expense_item_container}>
+            <View style={styles.expense_item}>
+              <Text style={styles.expense_title}>Discount</Text>
+              <View style={styles.expense_text}>
+                <Text style={styles.expense_price}>
+                  {Utils.formatPrice(discountTotal, '')}
+                </Text>
+                <Text style={styles.expense_unit}>đ</Text>
+              </View>
+            </View>
+            <View style={styles.line}></View>
+          </View>
+
+          <View style={styles.expense_item_container}>
+            <View style={styles.expense_item}>
+              <Text style={styles.expense_title}>Delivery</Text>
+              <View style={styles.expense_text}>
+                <Text style={styles.expense_price}>
+                  {Utils.formatPrice(totalDelivery, '')}
+                </Text>
+                <Text style={styles.expense_unit}>đ</Text>
+              </View>
+            </View>
+            <View style={styles.line}></View>
+          </View>
+
+          <View style={styles.expense_item_container}>
+            <View style={styles.expense_item}>
+              <View style={styles.expense_title_container}>
+                <Text style={styles.expense_total}>Total</Text>
+                {/* <Text style={styles.expense_subtotal}>{data.}items)</Text> */}
+              </View>
+              <View style={styles.expense_text}>
+                <Text style={styles.expense_price}>
+                  {Utils.formatPrice(totalPrice, '')}
+                </Text>
+                <Text style={styles.expense_unit}>đ</Text>
+              </View>
+            </View>
+            <View style={styles.line}></View>
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={styles.checkout_btn}
+          onPress={handleGoToCheckOut}>
+          <Text style={styles.checkout_text}>Checkout</Text>
+        </TouchableOpacity>
       </View>
-
-      <View style={styles.expense_list}>
-        <View style={styles.expense_item_container}>
-          <View style={styles.expense_item}>
-            <Text style={styles.expense_title}>Sub Total</Text>
-            <View style={styles.expense_text}>
-              <Text style={styles.expense_price}>
-                {Utils.formatPrice(30000, '')}
-              </Text>
-              <Text style={styles.expense_unit}>đ</Text>
-            </View>
-          </View>
-          <View style={styles.line}></View>
-        </View>
-
-        <View style={styles.expense_item_container}>
-          <View style={styles.expense_item}>
-            <Text style={styles.expense_title}>Tax and Fees</Text>
-            <View style={styles.expense_text}>
-              <Text style={styles.expense_price}>
-                {Utils.formatPrice(tax_and_fees, '')}
-              </Text>
-              <Text style={styles.expense_unit}>đ</Text>
-            </View>
-          </View>
-          <View style={styles.line}></View>
-        </View>
-
-        <View style={styles.expense_item_container}>
-          <View style={styles.expense_item}>
-            <Text style={styles.expense_title}>Delivery</Text>
-            <View style={styles.expense_text}>
-              <Text style={styles.expense_price}>
-                {Utils.formatPrice(delivery, '')}
-              </Text>
-              <Text style={styles.expense_unit}>đ</Text>
-            </View>
-          </View>
-          <View style={styles.line}></View>
-        </View>
-
-        <View style={styles.expense_item_container}>
-          <View style={styles.expense_item}>
-            <View style={styles.expense_title_container}>
-              <Text style={styles.expense_total}>Total</Text>
-              <Text style={styles.expense_subtotal}>(2 items)</Text>
-            </View>
-            <View style={styles.expense_text}>
-              <Text style={styles.expense_price}>
-                {Utils.formatPrice(30000, '')}
-              </Text>
-              <Text style={styles.expense_unit}>đ</Text>
-            </View>
-          </View>
-          <View style={styles.line}></View>
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.checkout_btn}>
-        <Text style={styles.checkout_text}>Checkout</Text>
-      </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -177,7 +366,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red',
     marginTop: Constant.screen.height * 0.045,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   back_btn: {
     width: Constant.screen.width * 0.1,
@@ -198,6 +387,8 @@ const styles = StyleSheet.create({
     fontSize: Constant.screen.width * 0.048,
     fontWeight: 'bold',
     color: Constant.color.black,
+    textAlign: 'center',
+    width: Constant.screen.width,
   },
 
   // scroll_view: {
@@ -302,13 +493,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     // marginBottom: Constant.screen.width * 0.06,
     // backgroundColor: 'yellow',
-    position: 'absolute',
-    bottom: (Constant.screen.width * 1161) / 1750 + 80,
+    // marginTop: 100,
+    // position: 'absolute',
+    // bottom: (Constant.screen.width * 1161) / 1750,
   },
 
   promotion: {
     width: Constant.screen.width * 0.88,
-    height: (Constant.screen.width * 0.88 * 6) / 33,
+    height: (Constant.screen.width * 0.88 * 6) / 40,
     borderRadius: (Constant.screen.width * 0.88 * 6) / 33,
     borderWidth: 1,
     borderColor: Constant.color.border,
@@ -345,11 +537,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     // backgroundColor: '#ccc',
-    position: 'absolute',
-    bottom: 100 + (Constant.screen.width * 0.88 * 5) / 35,
+    // position: 'absolute',
+    // bottom: (Constant.screen.width * 0.88 * 5) / 25,
   },
   expense_item_container: {
-    width: Constant.screen.width * 0.8,
+    width: Constant.screen.width * 0.85,
     height: (Constant.screen.width * 0.88 * 1) / 10,
     marginBottom: (Constant.screen.width * 0.88 * 1) / 40,
   },
@@ -414,8 +606,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: ((Constant.screen.width * 0.88 * 5) / 35) * 0.5,
-    position: 'absolute',
-    bottom: 50,
+    // position: 'absolute',
+    // bottom: 50,
   },
   checkout_text: {
     textTransform: 'uppercase',

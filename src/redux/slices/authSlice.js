@@ -13,7 +13,6 @@ const authSlice = createSlice({
   reducers: {
     login: (state, action) => {
       const {accessToken} = action.payload;
-      console.log('🚀 ~ file: authSlice.js:16 ~ password', action);
 
       AsyncStorage.setItem('accessToken', JSON.stringify(accessToken));
 
@@ -50,14 +49,16 @@ const authSlice = createSlice({
           console.log(err);
         });
     },
-    isLoginIn: async () => {
+    isLoginIn: async state => {
       try {
         const accessToken = await AsyncStorage.getItem('accessToken');
         const userInfo = await AsyncStorage.getItem('userInfo');
-        if (accessToken && userInfo) {
-          state.accessToken = accessToken;
-          state.userInfo = JSON.parse(userInfo);
-        }
+        console.log(accessToken);
+        console.log(userInfo);
+
+        state.accessToken = accessToken;
+        state.userInfo = JSON.parse(userInfo);
+        console.log(userInfo);
       } catch (e) {
         console.log(e);
       }
@@ -71,5 +72,5 @@ const authSlice = createSlice({
   },
 });
 const {actions, reducer} = authSlice;
-export const {login, logout, register, updateInfoUser} = actions;
+export const {login, logout, register, updateInfoUser, isLoginIn} = actions;
 export default reducer;

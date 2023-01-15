@@ -4,11 +4,16 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Navigation from 'src/navigation';
 import {NativeBaseProvider} from 'native-base';
+import {LogBox} from 'react-native';
 
 import store from 'src/redux/store';
 import {Provider} from 'react-redux';
+import {useEffect} from 'react';
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
+  // useEffect(() => {
+  //   LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  // });
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,

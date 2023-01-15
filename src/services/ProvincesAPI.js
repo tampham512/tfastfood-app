@@ -7,7 +7,7 @@ export const ProvincesAPI = createApi({
   endpoints: builder => ({
     getProvinces: builder.query({
       query: params => ({
-        url: '/get-infoshop/?depth=3',
+        url: '/?depth=3',
       }),
     }),
   }),

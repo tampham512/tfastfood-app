@@ -14,181 +14,36 @@ import {
   Alert,
   Button,
 } from 'react-native';
-
+import {FlatList} from 'native-base';
+import {useSelector} from 'react-redux';
+import CartItem from 'src/components/Cart/CartItem';
+import FavoriteItem from 'src/components/Favorite/FavoriteItem';
+import {ButtonBack} from 'src/components/Button/ButtonBack';
+import {SITE_MAP} from 'src/utils/constants/Path';
 const Favorite = () => {
-  const [active, setActive] = React.useState(1);
+  const dataFavorite = useSelector(state => state.favorite);
   return (
     <View style={styles.container}>
-      <View style={[styles.heder, {flexDirection: 'row'}]}>
-        <TouchableOpacity style={styles.buttonback}>
-          <Image
-            style={styles.FaceLogoback}
-            source={require('../../assets/Icons/3.png')}
-          />
-        </TouchableOpacity>
-        <Text style={styles.fast}>Favorite</Text>
-
-        <TouchableOpacity style={styles.buttonCaNhan}>
-          <Image
-            style={styles.FaceLogo}
-            source={require('../../assets/Icons/13.png')}
-          />
-        </TouchableOpacity>
-      </View>
+      <ButtonBack pathBack={SITE_MAP.INDEX} />
       <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          width: '100%',
-          marginBottom: 10,
-        }}>
-        <TouchableOpacity
-          onPress={() => setActive(1)}
-          style={{
-            backgroundColor: active === 1 ? '#FE724C' : 'blue',
-            padding: 10,
-            borderRadius: 10,
-            marginRight: 10,
-          }}>
-          <Text style={{color: '#fff'}}>Foods Item</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setActive(2)}
-          style={{
-            backgroundColor: active === 2 ? '#FE724C' : 'blue',
-            padding: 10,
-            borderRadius: 10,
-            color: '#fff',
-          }}>
-          <Text style={{color: '#fff'}}>Restoren</Text>
-        </TouchableOpacity>
+        style={[
+          styles.header,
+          {flexDirection: 'row', justifyContent: 'center'},
+        ]}>
+        <Text style={styles.fast}>Favorite</Text>
       </View>
-      <ScrollView style={styles.ScrollView}>
-        <View style={styles.ListMon}>
-          <TouchableOpacity style={styles.buttonMon}>
-            <Image
-              style={[styles.FaceLogoMon]}
-              source={require('../../assets/Icons/5.png')}
-            />
-          </TouchableOpacity>
-          <View style={styles.IconYT}>
-            <TouchableOpacity style={styles.buttonYT}>
-              <Image source={require('../../assets/Icons/love.png')} />
-            </TouchableOpacity>
-          </View>
 
-          <View style={[styles.textgia]}>
-            <Text style={styles.gia}>$10.35</Text>
-          </View>
-          <View style={[styles.textsao]}>
-            <Text style={styles.sao}>4.5 </Text>
-            <Image
-              style={styles.sao}
-              source={require('../../assets/Icons/star.png')}
-            />
-          </View>
-          <View style={[styles.Tenmon]}>
-            <Text style={styles.namemon}>Chicken Hawaiian</Text>
-          </View>
-          <View style={[styles.PL]}>
-            <Text style={styles.phuluc}>Chicken, Cheese and pineapple</Text>
-          </View>
-        </View>
-
-        <View style={styles.ListMon}>
-          <TouchableOpacity style={styles.buttonMon}>
-            <Image
-              style={[styles.FaceLogoMon]}
-              source={require('../../assets/Icons/5.png')}
-            />
-          </TouchableOpacity>
-          <View style={styles.IconYT}>
-            <TouchableOpacity style={styles.buttonYT}>
-              <Image source={require('../../assets/Icons/love.png')} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.textgia]}>
-            <Text style={styles.gia}>$10.35</Text>
-          </View>
-          <View style={[styles.textsao]}>
-            <Text style={styles.sao}>4.5 </Text>
-            <Image
-              style={styles.sao}
-              source={require('../../assets/Icons/star.png')}
-            />
-          </View>
-          <View style={[styles.Tenmon]}>
-            <Text style={styles.namemon}>Chicken Hawaiian</Text>
-          </View>
-          <View style={[styles.PL]}>
-            <Text style={styles.phuluc}>Chicken, Cheese and pineapple</Text>
-          </View>
-        </View>
-
-        <View style={styles.ListMon}>
-          <TouchableOpacity style={styles.buttonMon}>
-            <Image
-              style={[styles.FaceLogoMon]}
-              source={require('../../assets/Icons/5.png')}
-            />
-          </TouchableOpacity>
-          <View style={styles.IconYT}>
-            <TouchableOpacity style={styles.buttonYT}>
-              <Image source={require('../../assets/Icons/love.png')} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.textgia]}>
-            <Text style={styles.gia}>$10.35</Text>
-          </View>
-          <View style={[styles.textsao]}>
-            <Text style={styles.sao}>4.5 </Text>
-            <Image
-              style={styles.sao}
-              source={require('../../assets/Icons/star.png')}
-            />
-          </View>
-          <View style={[styles.Tenmon]}>
-            <Text style={styles.namemon}>Chicken Hawaiian</Text>
-          </View>
-          <View style={[styles.PL]}>
-            <Text style={styles.phuluc}>Chicken, Cheese and pineapple</Text>
-          </View>
-        </View>
-
-        <View style={styles.ListMon}>
-          <TouchableOpacity style={styles.buttonMon}>
-            <Image
-              style={[styles.FaceLogoMon]}
-              source={require('../../assets/Icons/5.png')}
-            />
-          </TouchableOpacity>
-          <View style={styles.IconYT}>
-            <TouchableOpacity style={styles.buttonYT}>
-              <Image source={require('../../assets/Icons/love.png')} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.textgia]}>
-            <Text style={styles.gia}>$10.35</Text>
-          </View>
-          <View style={[styles.textsao]}>
-            <Text style={styles.sao}>4.5 </Text>
-            <Image
-              style={styles.sao}
-              source={require('../../assets/Icons/star.png')}
-            />
-          </View>
-          <View style={[styles.Tenmon]}>
-            <Text style={styles.namemon}>Chicken Hawaiian</Text>
-          </View>
-          <View style={[styles.PL]}>
-            <Text style={styles.phuluc}>Chicken, Cheese and pineapple</Text>
-          </View>
-        </View>
-      </ScrollView>
+      <View style={{marginTop: 40, marginLeft: 20}}>
+        {dataFavorite?.value?.length > 0 ? (
+          <FlatList
+            style={styles.flat_list_item}
+            data={dataFavorite?.value}
+            renderItem={(item, index) => <FavoriteItem item={item} />}
+          />
+        ) : (
+          <Text style={{textAlign: 'left', width: '100%'}}>No empty item.</Text>
+        )}
+      </View>
     </View>
   );
 };
@@ -230,8 +85,8 @@ const styles = StyleSheet.create({
 
   fast: {
     color: '#272D2F',
-    marginTop: 25,
-    marginLeft: 70,
+    marginTop: 37,
+
     fontSize: 24,
     fontWeight: 'bold',
     justifyContent: 'center',

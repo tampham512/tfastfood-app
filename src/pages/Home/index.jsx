@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import React, {useMemo} from 'react';
 import {useState} from 'react';
 import {
   View,
@@ -20,6 +20,11 @@ import Categoty03Img from 'src/assets/HomeIcons/03.png';
 import {useGetCategoryQuery, useGetProductQuery} from 'src/services/ProductAPI';
 import {useGetProvincesQuery} from 'src/services/ProvincesAPI';
 import {useEffect} from 'react';
+import {SITE_MAP} from 'src/utils/constants/Path';
+import ProductItem from 'src/components/Product/ProductItem';
+import useUnmount from 'src/hooks/useUnmount';
+import {useDispatch} from 'react-redux';
+import {updatePathHistory} from 'src/redux/slices/commonSlice';
 const IMAGE_CATEGORY = {
   appetizer: Categoty01Img,
   pizza: Categoty02Img,
@@ -38,23 +43,38 @@ function Index() {
     {},
     {refetchOnMountOrArgChange: true},
   );
-  console.log('🚀 ~ file: index.jsx:25 ~ Index ~ products', products);
+  const navigation = useNavigation();
 
-  console.log('🚀 ~ file: index.jsx:31 ~ Index ~ category', category);
   const onChangeSearch = value => {
     console.log(value);
     setValueSearch(value);
   };
   const handleClickSearch = () => {
-    console.log(valueSearch);
+    if (valueSearch) {
+      navigation.navigate(SITE_MAP.PRODUCT_LIST, {search: valueSearch});
+    }
   };
   const handleClickCategory = slug => () => {
-    console.log(slug);
+    navigation.navigate(SITE_MAP.PRODUCT_LIST, {slug});
   };
+  const popularData = useMemo(() => {
+    return products?.product?.filter(item => item.popular) || [];
+  }, [products]);
+
+  const featuredData = useMemo(() => {
+    return products?.product?.filter(item => item.featured) || [];
+  }, [products]);
+
+  const route = useRoute();
+  const dispatch = useDispatch();
+
+  useUnmount(() => {
+    dispatch(updatePathHistory({pathHistory: SITE_MAP.INDEX}));
+  });
   return (
     <View style={{backgroundColor: Constant.color.white}}>
       <Header />
-      <View
+      <ScrollView
         style={{backgroundColor: Constant.color.white, paddingHorizontal: 25}}>
         <Text
           style={{
@@ -78,17 +98,18 @@ function Index() {
             style={styles.input}
             placeholder="Find for food or restaurant..."
           />
-
-          <Ionicons
-            name="search-circle"
-            size={42}
-            color={Constant.color.main}
-            style={{
-              position: 'absolute',
-              right: 8,
-              marginTop: 4,
-            }}
-          />
+          <TouchableOpacity onPress={handleClickSearch}>
+            <Ionicons
+              name="search-circle"
+              size={42}
+              color={Constant.color.main}
+              style={{
+                position: 'absolute',
+                right: 8,
+                marginTop: 4,
+              }}
+            />
+          </TouchableOpacity>
         </View>
 
         <View
@@ -132,7 +153,48 @@ function Index() {
           style={{
             paddingVertical: 10,
           }}></ScrollView>
-      </View>
+        <View>
+          <Text style={{fontWeight: 'bold', fontSize: 24, marginBottom: 10}}>
+            Featured Items
+          </Text>
+
+          <View style={{width: '100%'}}>
+            <FlatList
+              style={{width: '100%'}}
+              horizontal={true}
+              data={featuredData}
+              renderItem={(item, index) => (
+                <ProductItem item={item} key={index} isflastList />
+              )}
+            />
+          </View>
+        </View>
+        <View>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 24,
+              marginBottom: 10,
+              marginTop: 10,
+              textDecorationColor: Constant.color.main,
+              textDecorationLine: 'under',
+              textDecorationStyle: 'solid',
+            }}>
+            Popular Items
+          </Text>
+
+          <View style={{width: '100%'}}>
+            <FlatList
+              style={{width: '100%', marginBottom: 100}}
+              horizontal={true}
+              data={popularData}
+              renderItem={(item, index) => (
+                <ProductItem item={item} key={index} isflastList />
+              )}
+            />
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }

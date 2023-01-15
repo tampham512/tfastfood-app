@@ -37,18 +37,11 @@ import {
 import {useGetTokenLoginMutation} from 'src/services/LoginAPI';
 import {useLazyGetUserQuery} from 'src/services/AuthAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ScrollView, useToast} from 'native-base';
+import Alert from 'src/components/Alert';
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 const SCREEN_WIDTH = Dimensions.get('screen').width;
 
-// const options = [
-//   {value: 0, key: 0, name: 'Cá Nhân', color: 'cyan.100'},
-//   {value: 1, key: 1, name: 'Garage', color: 'cyan.100'},
-// ];
-// const listLogin = [
-//   {type: 'GOOGLE', key: 'GOOGLE', icon: GooglePlusIcon},
-//   {type: 'APPLE', key: 'APPLE', icon: AppleIcon},
-//   {type: 'FACEBOOK', key: 'FACEBOOK', icon: FacebookIcon},
-// ];
 const schema = yup.object({
   username: yup.string().required(),
   password: yup.string().required(),
@@ -56,6 +49,7 @@ const schema = yup.object({
 
 function Login({navigation}) {
   const [isCanSeePassWord, setIsSeePassword] = useState(false);
+  const toast = useToast();
 
   const handelSeePassWord = e => {
     e.stopPropagation();
@@ -73,9 +67,8 @@ function Login({navigation}) {
     formState: {errors},
     getValues,
   } = useForm({
-    resolver: yupResolver(schema),
+    // resolver: yupResolver(schema),
     reValidateMode: 'onChange',
-    defaultValue: {category: 0},
   });
   const onSubmit = data => {
     try {
@@ -84,24 +77,47 @@ function Login({navigation}) {
         .unwrap()
         .then(resToken => {
           console.log(resToken);
-          const payload = {
-            accessToken: resToken.token,
-          };
-          dispatch(login(payload));
-
-          getUsers()
-            .unwrap()
-            .then(resUser => {
-              console.log(resUser);
-              const payload = {
-                userInfo: resUser.user,
-              };
-
-              dispatch(updateInfoUser(payload));
-            })
-            .catch(error => {
-              console.log(error);
+          if (resToken?.validation_errors) {
+            toast.show({
+              placement: 'top',
+              render: () => (
+                <Alert
+                  color="error"
+                  status="error"
+                  content="Username or password is incorrect!"
+                />
+              ),
             });
+          } else {
+            const payload = {
+              accessToken: resToken.token,
+            };
+            dispatch(login(payload));
+            toast.show({
+              placement: 'top',
+              render: () => (
+                <Alert
+                  color="success"
+                  status="success"
+                  content="Login Success!"
+                />
+              ),
+            });
+
+            getUsers()
+              .unwrap()
+              .then(resUser => {
+                console.log(resUser);
+
+                const payload = {
+                  userInfo: resUser.user,
+                };
+                dispatch(updateInfoUser(payload));
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          }
         })
         .catch(err => {
           console.log(err);
@@ -110,128 +126,111 @@ function Login({navigation}) {
       console.log(error);
     }
   };
-  // const handleRegister = () => alert('Regiter link');
-  // const handlePressIconLogin = type => alert(type);
-  // console.log('login');
+
   return (
-    <View style={{backgroundColor: '#FFFFFF', flex: 1}}>
-      <View style={styles.imga}>
-        <Image style={styles.ecl} source={CONSTANT.images.ecl} />
-        <View style={styles.ecl2}>
-          <Image style={styles.eclpink} source={CONSTANT.images.eclippink} />
-        </View>
-        <View style={styles.ecl3}>
-          <Image
-            style={styles.eclorange}
-            source={CONSTANT.images.ecliporange}
-          />
-        </View>
-      </View>
-
-      <View style={styles.skipButtonView}>
-        <TouchableOpacity
-          style={styles.buttonSkip}
-          onPress={() => navigation.navigate(SITE_MAP.INTRO)}>
-          <Image style={styles.preImage} source={CONSTANT.images.pre} />
-        </TouchableOpacity>
-      </View>
-
-      <View style={[styles.container]}>
-        <View style={styles.textLogin}>
-          <Text style={styles.textconLogin}>Login</Text>
-        </View>
-        <View style={styles.enterInf}>
-          {/* <Text style={styles.textEM}> E-mail:</Text>
-          <View style={[styles.passWordView, styles.input1]}>
-            <TextInput
-              placeholder="Your email or phone"
-              keyboardType="email-address"
-              returnKeyType="next"
-              placeholderTextColor="gray"
+    <ScrollView style={{backgroundColor: '#FFFFFF'}}>
+      <View style={{backgroundColor: '#FFFFFF'}}>
+        <View style={styles.imga}>
+          <Image style={styles.ecl} source={CONSTANT.images.ecl} />
+          <View style={styles.ecl2}>
+            <Image style={styles.eclpink} source={CONSTANT.images.eclippink} />
+          </View>
+          <View style={styles.ecl3}>
+            <Image
+              style={styles.eclorange}
+              source={CONSTANT.images.ecliporange}
             />
-          </View> */}
-          <Input
-            control={control}
-            errors={errors}
-            name="username"
-            label="Username:"
-            placeholder="Your Username"
-          />
+          </View>
         </View>
 
-        <View style={styles.enterInf}>
-          {/* <Text style={styles.textEM}> Password:</Text>
-          <View style={[styles.passWordView, styles.input1]}> */}
-          {/* <TextInput
-              placeholder="Password"
-              keyboardType="default"enterInf
-              returnKeyType="done"
-              secureTextEntry={isCanSeePassWord}
-            /> */}
-          <Input
-            control={control}
-            errors={errors}
-            name="password"
-            label="Password"
-            placeholder="Your Password"
-            secureTextEntry={isCanSeePassWord}
-          />
-          <TouchableOpacity onPress={handelSeePassWord}>
-            {!isCanSeePassWord ? (
-              <Image source={CONSTANT.images.eye} style={styles.icEye} />
-            ) : (
-              <Image
-                source={CONSTANT.images.ic_eyeClose}
-                style={styles.icEye}
-              />
-            )}
-          </TouchableOpacity>
-          {/* </View> */}
-        </View>
-
-        <View style={styles.forgotView}>
-          <Text style={styles.textForgot}>Forgot password?</Text>
-        </View>
-        <View style={styles.buttonLoginView}>
+        <View style={styles.skipButtonView}>
           <TouchableOpacity
-            style={styles.buttonLogin}
-            onPress={handleSubmit(onSubmit)}>
-            <Text style={styles.textButtonLogin}> LOGIN</Text>
+            style={styles.buttonSkip}
+            onPress={() => navigation.navigate(SITE_MAP.INTRO)}>
+            <Image style={styles.preImage} source={CONSTANT.images.pre} />
           </TouchableOpacity>
         </View>
-        <View style={styles.bottom}>
-          <View style={styles.textNavigation}>
-            <Text style={styles.textAlready}>Don’t have an account?</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate(SITE_MAP.REGISTER)}>
-              <Text style={styles.textSingin}> Sign Up</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.linetText}>
-            <View style={styles.line2}></View>
-            <Text style={styles.textsign}> Sign in with</Text>
-            <View style={styles.line2}></View>
-          </View>
-          <View style={styles.buttonMain}>
-            <TouchableOpacity style={styles.contentSocial}>
-              <Image
-                style={styles.tinyLogo}
-                source={CONSTANT.images.ic_Facebook}
-              />
-              <Text style={styles.textFace}> FACEBOOK</Text>
-            </TouchableOpacity>
 
-            <TouchableOpacity style={styles.contentSocial}>
-              <Image
-                style={styles.tinyLogo}
-                source={CONSTANT.images.ic_Google}
-              />
-              <Text style={styles.textFace}> GOOGLE</Text>
+        <View style={[styles.container]}>
+          <View style={styles.textLogin}>
+            <Text style={styles.textconLogin}>Login</Text>
+          </View>
+          <View style={styles.enterInf}>
+            <Input
+              control={control}
+              errors={errors}
+              name="username"
+              label="Username:"
+              placeholder="Your Username"
+            />
+          </View>
+
+          <View style={styles.enterInf}>
+            <Input
+              control={control}
+              errors={errors}
+              name="password"
+              label="Password"
+              placeholder="Your Password"
+              secureTextEntry={isCanSeePassWord}
+            />
+            <TouchableOpacity onPress={handelSeePassWord}>
+              {!isCanSeePassWord ? (
+                <Image source={CONSTANT.images.eye} style={styles.icEye} />
+              ) : (
+                <Image
+                  source={CONSTANT.images.ic_eyeClose}
+                  style={styles.icEye}
+                />
+              )}
             </TouchableOpacity>
+            {/* </View> */}
+          </View>
+
+          <View style={styles.forgotView}>
+            <Text style={styles.textForgot}>Forgot password?</Text>
+          </View>
+          <View style={styles.buttonLoginView}>
+            <TouchableOpacity
+              style={styles.buttonLogin}
+              onPress={handleSubmit(onSubmit)}>
+              <Text style={styles.textButtonLogin}> LOGIN</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.bottom}>
+            <View style={styles.textNavigation}>
+              <Text style={styles.textAlready}>Don’t have an account?</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate(SITE_MAP.REGISTER)}>
+                <Text style={styles.textSingin}> Sign Up</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.linetText}>
+              <View style={styles.line2}></View>
+              <Text style={styles.textsign}> Sign in with</Text>
+              <View style={styles.line2}></View>
+            </View>
+            <View style={styles.buttonMain}>
+              <TouchableOpacity style={styles.contentSocial}>
+                <Image
+                  style={styles.tinyLogo}
+                  source={CONSTANT.images.ic_Facebook}
+                />
+                <Text style={styles.textFace}> FACEBOOK</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.contentSocial}>
+                <Image
+                  style={styles.tinyLogo}
+                  source={CONSTANT.images.ic_Google}
+                />
+                <Text style={styles.textFace}> GOOGLE</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -269,7 +268,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    position: 'absolute',
+    // position: 'absolute',
     left: 0,
     right: 0,
     top: 0,
@@ -277,14 +276,15 @@ const styles = StyleSheet.create({
   },
 
   textLogin: {
-    marginTop: 90,
+    marginTop: 10,
   },
   textconLogin: {
-    width: SCREEN_WIDTH - 148,
+    width: SCREEN_WIDTH,
     fontWeight: '600',
     fontSize: 37,
     lineHeight: 120,
     color: 'black',
+    marginLeft: 50,
   },
   textEM: {
     fontWeight: '400',

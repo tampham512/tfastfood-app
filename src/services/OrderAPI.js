@@ -17,7 +17,7 @@ export const OrderAPI = createApi({
         url: `get-bill-user`,
       }),
     }),
-    gitDiscounts: builder.query({
+    getDiscounts: builder.query({
       query: params => ({
         url: `view-discount`,
       }),
@@ -25,17 +25,26 @@ export const OrderAPI = createApi({
     updateBill: builder.mutation({
       query: body => ({
         url: `/update-bill-status`,
+        body,
+        method: 'POST',
       }),
-      method: 'POST',
+    }),
+    reviewProduct: builder.mutation({
+      query: body => ({
+        url: `/store-review`,
+        body,
+        method: 'POST',
+      }),
     }),
   }),
 });
 
 export const {
   useGetBillUserQuery,
-  useGitDiscountsQuery,
+  useGetDiscountsQuery,
   useOrderBillMutation,
   useLazyGetBillUserQuery,
-  useLazyGitDiscountsQuery,
+  useLazyGetDiscountsQuery,
   useUpdateBillMutation,
+  useReviewProductMutation,
 } = OrderAPI;
