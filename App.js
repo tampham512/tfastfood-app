@@ -11,13 +11,8 @@ import {Provider} from 'react-redux';
 import {useEffect} from 'react';
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
-  // useEffect(() => {
-  //   LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-  // });
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
 
   return (
     <Provider store={store}>

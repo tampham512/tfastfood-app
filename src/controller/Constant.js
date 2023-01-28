@@ -48,5 +48,6 @@ export default {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
-  REACT_APP_API_URL: 'https://tfastfood.tk/',
+  REACT_APP_API_URL: 'https://tfastfood-v2.000webhostapp.com/',
+  REACT_APP_API: 'https://tfastfood-v2.000webhostapp.com/api',
 };
