@@ -48,7 +48,7 @@ const schema = yup.object({
 });
 
 function Login({navigation}) {
-  const [isCanSeePassWord, setIsSeePassword] = useState(false);
+  const [isCanSeePassWord, setIsSeePassword] = useState(true);
   const toast = useToast();
 
   const handelSeePassWord = e => {

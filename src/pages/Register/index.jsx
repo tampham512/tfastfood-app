@@ -49,8 +49,8 @@ const schema = yup.object({
 });
 
 function Register({navigation}) {
-  const [isCanSeePassWord, setIsSeePassword] = useState(false);
-  const [isCanSeePassWordConfirm, setIsCanSeePassWordConfirm] = useState(false);
+  const [isCanSeePassWord, setIsSeePassword] = useState(true);
+  const [isCanSeePassWordConfirm, setIsCanSeePassWordConfirm] = useState(true);
 
   const toast = useToast();
 
