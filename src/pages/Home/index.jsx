@@ -98,6 +98,7 @@ function Index() {
             style={styles.input}
             placeholder="Find for food or restaurant..."
             placeholderTextColor={Constant.color.border}
+            color={Constant.color.textblack}
           />
           <TouchableOpacity onPress={handleClickSearch}>
             <Ionicons
