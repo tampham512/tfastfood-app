@@ -168,6 +168,7 @@ function Register({navigation}) {
               name="username"
               label="Username:"
               placeholder="Your Username"
+              placeholderTextColor={CONSTANT.color.border}
             />
           </View>
           <View style={styles.enterInf}>
@@ -177,6 +178,7 @@ function Register({navigation}) {
               name="email"
               label="Email"
               placeholder="Your Email"
+              placeholderTextColor={CONSTANT.color.border}
             />
           </View>
 
@@ -188,6 +190,7 @@ function Register({navigation}) {
               label="Password"
               placeholder="Your Password"
               secureTextEntry={isCanSeePassWord}
+              placeholderTextColor={CONSTANT.color.border}
             />
             <TouchableOpacity onPress={handelSeePassWord}>
               {!isCanSeePassWord ? (
@@ -208,6 +211,7 @@ function Register({navigation}) {
               label="Password Confirm"
               placeholder="Your Password Confirm"
               secureTextEntry={isCanSeePassWordConfirm}
+              placeholderTextColor={CONSTANT.color.border}
             />
             <TouchableOpacity onPress={handelSeePassWordConfirm}>
               {!isCanSeePassWordConfirm ? (
@@ -230,10 +234,10 @@ function Register({navigation}) {
           </View>
           <View style={styles.bottom}>
             <View style={styles.textNavigation}>
-              <Text style={styles.textAlready}>Don’t have an account?</Text>
+              <Text style={styles.textAlready}>Already have an account?</Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate(SITE_MAP.LOGIN)}>
-                <Text style={styles.textSingin}> Sign Up</Text>
+                <Text style={styles.textSingin}> Sign In</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.linetText}>

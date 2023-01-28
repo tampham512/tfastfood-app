@@ -142,6 +142,7 @@ function Index() {
                   left: 15,
                   bottom: 50,
                   // height: 'auto',
+                  color: Constant.color.gray,
                 }}>
                 {item.content}
               </Text>

@@ -47,7 +47,7 @@ function Index() {
           width: 38,
           borderRadius: 5,
           marginBottom: 10,
-          backgroundColor: Constant.color.white,
+          backgroundColor: Constant.color.main,
           shadowColor: Constant.color.gray,
           shadowOffset: {
             width: 0,
@@ -58,7 +58,7 @@ function Index() {
           elevation: 5,
         }}
         onPress={handleShowSidebar}>
-        <Ionicons name="reorder-three-outline" size={38} />
+        <Ionicons name="reorder-three-outline" size={38} color={Constant.color.background} />
       </TouchableOpacity>
 
       <View style={{flexDirection: 'row'}}>

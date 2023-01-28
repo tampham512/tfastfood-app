@@ -137,7 +137,7 @@ const Details = () => {
           </View>
           <Text
             style={{
-              color: '323643',
+              color: Constant.color.textblack,
               fontSize: 28,
               fontWeight: '600',
               marginTop: 22,
@@ -223,12 +223,19 @@ const Details = () => {
               source={{
                 html: productDetail?.product?.description,
               }}
+              tagsStyles={{
+                body: {
+                  color: Constant.color.textblack,
+                },
+              }}
             />
           </View>
 
           <View
             style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
-            <Text style={{marginRight: 5}}>SHARE:</Text>
+            <Text style={{marginRight: 5, color: Constant.color.main}}>
+              SHARE:
+            </Text>
             <Ionicons
               name="logo-youtube"
               size={22}
@@ -255,7 +262,9 @@ const Details = () => {
               color={Constant.color.main}
               style={{marginRight: 5}}
             />
-            <Text style={{marginRight: 5}}>Privacy Policy.</Text>
+            <Text style={{marginRight: 5, color: Constant.color.main}}>
+              Privacy Policy.
+            </Text>
           </View>
           <View
             style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
@@ -265,7 +274,9 @@ const Details = () => {
               color={Constant.color.main}
               style={{marginRight: 5}}
             />
-            <Text style={{marginRight: 5}}>Delivery Policy.</Text>
+            <Text style={{marginRight: 5, color: Constant.color.main}}>
+              Delivery Policy.
+            </Text>
           </View>
         </View>
       </ScrollView>

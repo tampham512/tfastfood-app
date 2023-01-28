@@ -18,7 +18,7 @@ import Favorite from 'src/pages/Favorite';
 import ProductsList from 'src/pages/ProductsList';
 import Categories from 'src/pages/Categories';
 import Reviews from 'src/pages/Reviews';
-import Rating from 'src/pages/Rating';
+import Rating from 'src/pages/rating';
 import RatingService from 'src/pages/RatingService';
 import Order from 'src/pages/Order';
 import Cart from 'src/pages/Cart';

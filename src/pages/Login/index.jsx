@@ -162,6 +162,7 @@ function Login({navigation}) {
               name="username"
               label="Username:"
               placeholder="Your Username"
+              placeholderTextColor={CONSTANT.color.border}
             />
           </View>
 
@@ -173,6 +174,7 @@ function Login({navigation}) {
               label="Password"
               placeholder="Your Password"
               secureTextEntry={isCanSeePassWord}
+              placeholderTextColor={CONSTANT.color.border}
             />
             <TouchableOpacity onPress={handelSeePassWord}>
               {!isCanSeePassWord ? (

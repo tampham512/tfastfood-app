@@ -73,7 +73,7 @@ const index = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <View style={styles.textNavigation}>
-          <Text style={styles.textAlready}>Already have an account?</Text>
+          <Text style={styles.textAlready}>Don’t have an account?</Text>
           <TouchableOpacity onPress={handlePressRigister}>
             <Text style={styles.textSingin}> Sign Up</Text>
           </TouchableOpacity>

@@ -126,11 +126,12 @@ const Address = () => {
               style={{
                 fontSize: 17,
                 fontWeight: '600',
-                color: '#111719',
+                color: Constant.color.textblack,
               }}
               placeholder="Arlene McCoy"
               onChangeText={text => setFullName(text)}
               value={fullName}
+              placeholderTextColor={Constant.color.border}
             />
           </View>
         </View>
@@ -158,11 +159,12 @@ const Address = () => {
               style={{
                 fontSize: 17,
                 fontWeight: '600',
-                color: '#111719',
+                color: Constant.color.textblack,
               }}
               placeholder="018-49862746"
               onChangeText={text => setNumberPhone(text)}
               value={numberPhone}
+              placeholderTextColor={Constant.color.border}
             />
           </View>
         </View>
@@ -283,11 +285,12 @@ const Address = () => {
               style={{
                 fontSize: 17,
                 fontWeight: '600',
-                color: '#111719',
+                color: Constant.color.textblack,
               }}
               placeholder="Street"
               onChangeText={text => setStreet(text)}
               value={street}
+              placeholderTextColor={Constant.color.border}
             />
           </View>
         </View>
