@@ -99,7 +99,7 @@ const Categories = () => {
         temp = temp.sort((a, b) => a.id - b.id);
     }
     return temp;
-  }, [products, selected]);
+  }, [products, selected, params]);
 
   return (
     <View style={styles.container}>
